@@ -1,3 +1,5 @@
+# Created by .ignore support plugin (hsz.mobi)
+### C++ template
 # Prerequisites
 *.d
 
@@ -36,9 +38,12 @@
 *cmake-build-*
 /CMakeFiles
 Makefile
+/build
 
 # cmake files
-*.cmake
+#*.cmake
+# exclude configuration from ignore
+#!/cmake/CompilerOptions.cmake
 
 # DEB packages
 *.deb
@@ -49,8 +54,14 @@ install_manifest*
 # Code::Blocks project files
 *.cbp
 
-# Project Specific settings
+# IDE settings
 .idea
 
 # architecture precompiled file
 arch.c
+
+# Cmake swap
+/.CMakeLists.txt.swp
+
+# Testing
+Testing/
