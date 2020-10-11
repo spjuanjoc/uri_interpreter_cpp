@@ -1,21 +1,32 @@
 # URI parser C++
 Identify, process, and distinguish IPv4, IPv6, and RegName for URI.
 
-Prueba de analizador de direcciones URI para validar:
+|CI|Platform|Build Status|
+|---|---|---|
+|Github Actions|Linux|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
+
+---
+Analyse the URI to distinguish:
 * IPv6
 * IPv4
 * Registered Name
-* Puerto
+* Port
 
-La uri debe tener la siguiente estructura: 
+URI generic syntax:
 
-scheme + authority (+ path + query + fragment)
+    URI = scheme:[//authority]path[?query][#fragment]
 
-donde authority:
+where the authority component divides into three subcomponents:
 
-(userinfo + ) host ( + port )  
+    authority = [userinfo@]host[:port]
+
+![img](docs/images/1920px-URI_syntax_diagram.svg.png "URI syntax diagram")
+
+
+See the Wiki for [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
 
 ## Tools 
-* CMake
-* CLion
-* C++17
+* CMake > 3.1
+* gcc-7 c++17
+* conan
+* googletest
