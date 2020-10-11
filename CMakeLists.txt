@@ -4,6 +4,8 @@ project(uri_parser_cpp VERSION 0.0.1 LANGUAGES CXX)
 
 SET(CMAKE_CXX_STANDARD 17)
 
+add_executable(${PROJECT_NAME})
+
 # Options
 option(ENABLE_PCH         "Enable Precompiled Headers" FALSE)
 option(ENABLE_TESTS       "Enable tests" FALSE)
@@ -11,9 +13,9 @@ option(ENABLE_CONAN       "Enable Conan" FALSE)
 option(ENABLE_WARN_AS_ERR "Treat compiler warnings as errors" FALSE)
 option(ENABLE_COVERAGE    "Enable gcov coverage" FALSE)
 
-# standard compiler warnings
+# Standard compiler warnings
 set(GCC_OPTIONS
-    -O3
+#    -O3
     -Wall
     )
 
@@ -36,18 +38,22 @@ else()
   message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
 endif()
 
-
+# Sources
 set(SOURCES
     src/URIHandler.cpp
+    src/URI/IP/Version4.cpp
+    src/URI/IP/Version6.cpp
+    src/URI/IP/RegisteredName.cpp
     src/main.cpp
     )
-
-add_executable(${PROJECT_NAME} ${SOURCES})
 
 # ---
 # target instructions must be set after add_executable or add_library instructions
 
 target_compile_options(${PROJECT_NAME} INTERFACE ${PROJECT_OPTIONS})
+
+# Get the sources
+target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
 
 # Get the headers
 set(INCLUDES include)
@@ -72,5 +78,3 @@ if(ENABLE_TESTS)
 elseif()
   message("Tests not included")
 endif()
-
-
