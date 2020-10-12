@@ -41,9 +41,6 @@ endif()
 # Sources
 set(SOURCES
     src/URIHandler.cpp
-    src/URI/IP/Version4.cpp
-    src/URI/IP/Version6.cpp
-    src/URI/IP/RegisteredName.cpp
     src/main.cpp
     )
 
