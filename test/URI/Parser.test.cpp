@@ -21,55 +21,64 @@ mailto:John.Doe@example.com
 └─┬──┘ └────┬─────────────┘
 scheme     path
 */
-auto uri2CompsNoHost = "mailto:John.Doe@example.com";
+auto uri2SchemePath = "mailto:John.Doe@example.com";
 
 /*
 tel:+1-816-555-1212
 └┬┘ └──────┬──────┘
 scheme    path
 */
-auto uri2CompsNoHost2 = "tel:+1-816-555-1212";
+auto uri2SchemePath2 = "tel:+1-816-555-1212";
 
 /*
-  urn:oasis:names:specification:docbook:dtd:xml:4.1.2
+urn:oasis:names:specification:docbook:dtd:xml:4.1.2
 └┬┘ └──────────────────────┬──────────────────────┘
 scheme                    path
  */
-auto uri2CompsNoHost3 = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+auto uri2SchemePath3 = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
 
 /*
 news:comp.infosystems.www.servers.unix
 └┬─┘ └─────────────┬─────────────────┘
 scheme            path
 */
-auto uri2CompsHostRegName = "news:comp.infosystems.www.servers.unix";
+auto uri2SchemePath4 = "news:comp.infosystems.www.servers.unix";
 
 /*
 telnet://192.0.2.16:80/
 └─┬──┘   └─────┬─────┘│
 scheme     authority  path
 */
-auto uri3CompsV4 = "telnet://192.0.2.16:80/";
+auto uri3SchemeAuthV4Path = "telnet://192.0.2.16:80/";
+auto uri3SchemeAuthV4Path2 = "telnet://192.0.2.16:80/path";
 
 /*
-  ldap://[2001:db8::7]/c=GB?objectClass?one
+ldap://[2001:db8::7]/c=GB?objectClass?one
 └┬─┘   └─────┬─────┘└─┬─┘ └──────┬──────┘
 scheme   authority   path      query
 */
-auto uri4compsV6 = "ldap://[2001:db8::7]/c=GB?objectClass?one";
+auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
 
 /*
-userinfo       host      port
-┌──┴───┐ ┌──────┴──────┐ ┌┴┐
-https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top
-└─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
-scheme          authority                  path                 query           fragment
-*/
-auto uri5compsRegName = "https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top";
+          userinfo       host      port
+          ┌──┴───┐ ┌──────┴──────┐ ┌┴┐
+  https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top
+  └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
+  scheme          authority                  path                 query           fragment
+ */
+auto uri5SchemeAuthRNPathQueryFrag = "https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top";
 
-TEST_F(URIFixture, TwoComponentsNohost)
+TEST_F(URIFixture, SchemeAndPathOnly)
 {
+  auto tokens = lex(uri2SchemePath);
+}
 
+/**
+ * The happy path with IPv4
+ */
+TEST_F(URIFixture, SchemeAuthorityAndPath_IPv4)
+{
+  auto tokens = lex(uri3SchemeAuthV4Path2);
 }
 
 TEST_F(URIFixture, IParserTest)
