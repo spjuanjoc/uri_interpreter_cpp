@@ -68,13 +68,13 @@ public:
   virtual std::string getComponent(Component) = 0;
 };
 
-class IPv4Parser;
+class HostParser;
 
 class Resource : public IResource
 {
 public:
   std::string uri;
-  IPv4Parser* v4;
+  HostParser* v4;
 
 public:
   explicit Resource(std::string  uri) : uri(std::move(uri))
@@ -114,14 +114,24 @@ public:
 class IParseStrategy
 {
 public:
-  virtual void parse(std::string& ) ;
+  virtual void parse(std::string& ) {};
 };
 
-class IPv4Parser : IParseStrategy
+class HostParser : public IParseStrategy
 {
+public:
   void parse(std::string& string) override
   {
 
+  }
+};
+
+class v4IP : public HostParser
+{
+public:
+  void parse(std::string& string) override
+  {
+    HostParser::parse(string);
   }
 };
 
@@ -161,23 +171,42 @@ public:
   std::string str() const { return oss.str(); }
 };
 
+void case1(const std::string& uri);
+void case2(const std::vector<std::string>& uri);
+void case3(const std::vector<std::string>& uri);
+void case4(const std::vector<std::string>& uri);
+
 std::vector<Components> lex(const std::string& input)
 {
-  std::string prepare{input};
-  std::replace_if(
-    std::begin(prepare),
-    std::end(prepare),[](const char c) { return c == '/'; }, ' ');
+  std::string slashLex{input};
 
-  std::istringstream iss{prepare};
+  std::replace_if(
+    std::begin(slashLex),
+    std::end(slashLex),
+    [](const char c) { return c == '/'; },
+    ' ');
+
+  std::istringstream iss{slashLex};
   std::vector<std::string> components{std::istream_iterator<std::string>{iss},
                                  std::istream_iterator<std::string>{}};
 
   switch (components.size()) {
     case 1:
+      std::cout << "case 1\n";
+      case1(components.at(0));
       break;
-    // scheme .at(0)
-    // path ? .at(1)
-    // authority .at(0)
+    case 2:
+      std::cout << "case 2\n";
+      case2(components);
+      break;
+    case 3:
+      std::cout << "case 3\n";
+      case3(components);
+      break;
+    default:
+      std::cout << "case 4+\n";
+      case4(components);
+      break;
   }
   for (const auto& it: components)
   {
@@ -186,6 +215,71 @@ std::vector<Components> lex(const std::string& input)
 
   return {};
 }
+
+/*
+ * seek first ':'
+ * scheme + path = minimal URI
+ */
+void case1(const std::string& uri)
+{
+  auto schemeAndPath = uri.at(0);
+  // now they can be parsed
+  std::cout << "Scheme: " << schemeAndPath << '\n';
+  std::cout << "lex completed\n";
+}
+
+/*
+ * scheme .at(0)
+ * authority .at(1)
+ */
+void case2(const std::vector<std::string>& uri)
+{
+  auto scheme = uri.at(0);
+  auto authority = uri.at(1);
+  // now they can be parsed
+  std::cout << "Scheme: " << scheme << '\n';
+  std::cout << "Authority: " << authority << '\n';
+  std::cout << "lex completed\n";
+}
+
+/*
+ * scheme .at(0)
+ * authority .at(1)
+ * path?query#fragment .at(2)
+ */
+void case3(const std::vector<std::string>& uri)
+{
+  auto scheme = uri.at(0);
+  auto authority = uri.at(1);
+  auto path      = uri.at(2);
+  // now they can be parsed
+  std::cout << "Scheme: " << scheme << '\n';
+  std::cout << "Authority: " << authority << '\n';
+  std::cout << "Path+: " << path << '\n';
+  std::cout << "lex completed\n";
+}
+
+/*
+ *
+ * more than 3 means it has/multi/path/
+ * take first 2, and join from 3+
+ *
+ * scheme .at(0)
+ * authority .at(1)
+ * path?query#fragment .at(2)
+ */
+void case4(const std::vector<std::string>& uri)
+{
+  auto scheme = uri.at(0);
+  auto authority = uri.at(1);
+  auto path      = uri.at(2); // concat from 2+
+  // now they can be parsed
+  std::cout << "Scheme: " << scheme << '\n';
+  std::cout << "Authority: " << authority << '\n';
+  std::cout << "Path+: " << path << '\n';
+  std::cout << "lex completed\n";
+}
+
 /**
 Plan:
 
