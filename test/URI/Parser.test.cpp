@@ -66,9 +66,10 @@ auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
   └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
   scheme          authority                  path                 query           fragment
  */
-auto uri5SchemeAuthRNPathQueryFrag = "https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top";
+auto uri5SchemeAuthRNPathQueryFrag{"https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
+auto uri5SchemeAuthRNPathQueryFrag2{"https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
 
-TEST_F(URIFixture, SchemeAndPathOnly)
+TEST_F(URIFixture, lexSchemeAndPathOnly)
 {
   auto tokens = lex(uri2SchemePath);
 }
@@ -76,21 +77,24 @@ TEST_F(URIFixture, SchemeAndPathOnly)
 /**
  * The happy path with IPv4
  */
-TEST_F(URIFixture, SchemeAuthorityAndPath_IPv4)
+TEST_F(URIFixture, lexSchemeAuthorityAndPath_IPv4)
 {
   auto tokens = lex(uri3SchemeAuthV4Path2);
 }
 
-TEST_F(URIFixture, IParserTest)
+TEST_F(URIFixture, validate5CompsHostv4)
 {
-  std::string fullValidUri{"https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
-  std::string schemeAndPath{"mailto:John.Doe@example.com"};
-  Resource uri{fullValidUri};
+  Resource uri{uri5SchemeAuthRNPathQueryFrag};
 
-  EXPECT_STREQ(uri.uri.c_str(), fullValidUri.c_str());
-
-  auto tokens = lex(fullValidUri);
-//  validate is v4?
   EXPECT_TRUE(uri.validate(Host::IPv4));
   EXPECT_STREQ(uri.getComponent(Component::scheme).c_str(), "https");
+}
+
+TEST_F(URIFixture, validSchemeAndPath)
+{
+  std::string schemeAndPath{"mailto:John.Doe@example.com"};
+  Resource uri{schemeAndPath};
+
+  EXPECT_TRUE(uri.validate(Host::IPv4));
+  EXPECT_STREQ(uri.getComponent(Component::scheme).c_str(), "mailto");
 }
