@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(uri_parser_cpp VERSION 0.0.1 LANGUAGES CXX)
+project(uri_interpreter_cpp VERSION 0.0.2 LANGUAGES CXX)
 
-SET(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT_NAME})
+add_executable("${PROJECT_NAME}_runner")
+add_library(${PROJECT_NAME} STATIC)
 
 # Options
 option(ENABLE_PCH         "Enable Precompiled Headers" FALSE)
@@ -41,7 +42,6 @@ endif()
 # Sources
 set(SOURCES
     src/URIHandler.cpp
-    src/main.cpp
     )
 
 # ---
@@ -50,6 +50,7 @@ set(SOURCES
 target_compile_options(${PROJECT_NAME} INTERFACE ${PROJECT_OPTIONS})
 
 # Get the sources
+target_sources("${PROJECT_NAME}_runner" PUBLIC ${SOURCES} src/main.cpp)
 target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
 
 # Get the headers
