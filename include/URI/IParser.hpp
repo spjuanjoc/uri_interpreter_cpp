@@ -26,6 +26,9 @@
 //};
 //}
 
+/**
+ * 1. Components
+ */
 struct Authority
 {
   std::string host;
@@ -59,6 +62,9 @@ enum class Component : std::uint32_t
   authority = 4  /**< 4 */
 };
 
+/**
+ * 2. Interface
+ */
 class IResource
 {
 public:
@@ -68,16 +74,22 @@ public:
   virtual std::string getComponent(Component) = 0;
 };
 
+
+/**
+ * 3. Implementation
+ */
 class HostParser;
+Components lex(const std::string& input);
 
 class Resource : public IResource
 {
 public:
-  std::string uri;
+  std::string             uri_;
   HostParser* v4;
+  Components components_;
 
 public:
-  explicit Resource(std::string  uri) : uri(std::move(uri))
+  explicit Resource(std::string  uri) : uri_(std::move(uri))
   {
   }
 
@@ -93,6 +105,7 @@ public:
         break;
       case Host::IPv4:
         result = true;
+        components_ = lex(uri_);
 //        lex();
 //        parse();
         break;
@@ -105,9 +118,26 @@ public:
     return result;
   }
 
-  std::string getComponent(Component) override
+  std::string getComponent(Component c) override
   {
-    return std::__cxx11::string();
+    std::string result;
+
+    switch (c)
+    {
+      case Component::scheme:
+        result = components_.scheme;
+        break;
+      case Component::path:
+        break;
+      case Component::query:
+        break;
+      case Component::fragment:
+        break;
+      case Component::authority:
+        break;
+    }
+
+    return result;
   }
 };
 
@@ -171,13 +201,17 @@ public:
   std::string str() const { return oss.str(); }
 };
 
-void case1(const std::string& uri);
+/**
+ * 4. Usage - lex
+ */
+Components case1(const std::string& uri);
 void case2(const std::vector<std::string>& uri);
 void case3(const std::vector<std::string>& uri);
-void case4(const std::vector<std::string>& uri);
+Components case4(const std::vector<std::string>& uri);
 
-std::vector<Components> lex(const std::string& input)
+Components lex(const std::string& input)
 {
+  Components result;
   std::string slashLex{input};
 
   std::replace_if(
@@ -193,7 +227,7 @@ std::vector<Components> lex(const std::string& input)
   switch (components.size()) {
     case 1:
       std::cout << "case 1\n";
-      case1(components.at(0));
+      result = case1(components.at(0));
       break;
     case 2:
       std::cout << "case 2\n";
@@ -205,27 +239,53 @@ std::vector<Components> lex(const std::string& input)
       break;
     default:
       std::cout << "case 4+\n";
-      case4(components);
+      result = case4(components);
       break;
   }
+
   for (const auto& it: components)
   {
     std::cout << it << ' ';
   }
 
-  return {};
+  return result;
 }
 
 /*
  * seek first ':'
  * scheme + path = minimal URI
  */
-void case1(const std::string& uri)
+Components case1(const std::string& uri)
 {
-  auto schemeAndPath = uri.at(0);
+  Components result{};
+  auto schemeAndPath{uri};
+
+  std::replace_if(
+    std::begin(schemeAndPath),
+    std::end(schemeAndPath),
+    [](const char c) { return c == ':'; },
+    ' ');
+
+  std::istringstream iss{schemeAndPath};
+  std::vector<std::string> components{std::istream_iterator<std::string>{iss},
+                                      std::istream_iterator<std::string>{}};
+
+  switch (components.size()) {
+    case 1:
+      std::cout << "only scheme\n";
+      result.scheme = components.at(0);
+      break;
+    case 2:
+    default:
+      std::cout << "scheme and authority\n";
+      result.scheme = components.at(0);
+      result.authority.host = components.at(1);
+      break;
+  }
+
   // now they can be parsed
-  std::cout << "Scheme: " << schemeAndPath << '\n';
   std::cout << "lex completed\n";
+  return result;
 }
 
 /*
@@ -268,17 +328,32 @@ void case3(const std::vector<std::string>& uri)
  * authority .at(1)
  * path?query#fragment .at(2)
  */
-void case4(const std::vector<std::string>& uri)
+Components case4(const std::vector<std::string>& uri)
 {
-  auto scheme = uri.at(0);
-  auto authority = uri.at(1);
-  auto path      = uri.at(2); // concat from 2+
+  Components result;
+
+  result.scheme         = uri.at(0);
+  result.authority.host = uri.at(1);
+  result.path           = uri.at(2);  // concat from 2+
+
+  result.scheme.erase(std::remove_if(std::begin(result.scheme),
+                              std::end(result.scheme),
+                              [](char c) { return c == ':'; }),
+               std::end(result.scheme));
+
   // now they can be parsed
-  std::cout << "Scheme: " << scheme << '\n';
-  std::cout << "Authority: " << authority << '\n';
-  std::cout << "Path+: " << path << '\n';
+  std::cout << "Scheme: " << result.scheme << '\n';
+  std::cout << "Authority: " << result.authority.host << '\n';
+  std::cout << "Path+: " << result.path << '\n';
   std::cout << "lex completed\n";
+
+  return result;
 }
+
+/**
+ * 4. Usage - parser
+ */
+//...
 
 /**
 Plan:
