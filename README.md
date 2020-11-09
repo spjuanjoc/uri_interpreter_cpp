@@ -1,4 +1,4 @@
-# URI parser C++
+# URI interpreter C++
 Identify, process, and distinguish IPv4, IPv6, and RegName for URI.
 
 |CI|Platform|Build Status|
@@ -6,11 +6,29 @@ Identify, process, and distinguish IPv4, IPv6, and RegName for URI.
 |Github Actions|Linux|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
 
 ---
-Analyse the URI to distinguish:
+Analyse an URI to distinguish:
+* Scheme
+* Authority
+* Path
+* Query
+* Fragment
+
+Where the authority's components are:
+* Userinfo
+* Host
+* Port
+
+And the host can be:
 * IPv6
 * IPv4
 * Registered Name
-* Port
+
+The minimum required components are:
+* Scheme
+* Host
+* Path
+
+---
 
 URI generic syntax:
 
