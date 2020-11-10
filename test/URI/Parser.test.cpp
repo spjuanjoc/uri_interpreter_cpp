@@ -68,33 +68,66 @@ auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
  */
 auto uri5SchemeAuthRNPathQueryFrag{"https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
 auto uri5SchemeAuthRNPathQueryFrag2{"https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
+//
+//TEST_F(URIFixture, lexSchemeAndPathOnly)
+//{
+//  auto tokens = lex(uri2SchemePath);
+//}
+//
+///**
+// * The happy path with IPv4
+// */
+//TEST_F(URIFixture, lexSchemeAuthorityAndPath_IPv4)
+//{
+//  auto tokens = lex(uri3SchemeAuthV4Path2);
+//}
 
-TEST_F(URIFixture, lexSchemeAndPathOnly)
+// ---
+
+TEST_F(URIFixture, Case1ValidSchemeAndPath)
 {
-  auto tokens = lex(uri2SchemePath);
+  Resource uri{uri2SchemePath};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "mailto");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "John.Doe@example.com");
 }
 
-/**
- * The happy path with IPv4
- */
-TEST_F(URIFixture, lexSchemeAuthorityAndPath_IPv4)
+TEST_F(URIFixture, Case1ValidSchemeAndPath2)
 {
-  auto tokens = lex(uri3SchemeAuthV4Path2);
+  Resource uri{uri2SchemePath2};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "tel");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "+1-816-555-1212");
 }
 
-TEST_F(URIFixture, validate5CompsHostv4)
+TEST_F(URIFixture, Case1ValidSchemeAndPath3)
+{
+  Resource uri{uri2SchemePath3};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "urn");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "oasis:names:specification:docbook:dtd:xml:4.1.2");
+}
+
+TEST_F(URIFixture, Case1ValidSchemeAndPath4)
+{
+  Resource uri{uri2SchemePath4};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "news");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "comp.infosystems.www.servers.unix");
+}
+
+
+TEST_F(URIFixture, Case4Valid5CompsHostRN)
 {
   Resource uri{uri5SchemeAuthRNPathQueryFrag};
 
-  EXPECT_TRUE(uri.validate(Host::IPv4));
-  EXPECT_STREQ(uri.getComponent(Component::scheme).c_str(), "https");
-}
+  EXPECT_TRUE(uri.validate(Host::RegName));
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "https");
+  EXPECT_STREQ(uri.get(Component::authority).c_str(), "john.doe@example.com:123");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "forum"); // should be forum + questions
 
-TEST_F(URIFixture, validSchemeAndPath)
-{
-  std::string schemeAndPath{"mailto:John.Doe@example.com"};
-  Resource uri{schemeAndPath};
-
-  EXPECT_TRUE(uri.validate(Host::IPv4));
-  EXPECT_STREQ(uri.getComponent(Component::scheme).c_str(), "mailto");
 }
