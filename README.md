@@ -1,12 +1,19 @@
 # URI interpreter C++
-Identify, process, and distinguish IPv4, IPv6, and RegName for URI.
 
 |CI|Platform|Build Status|
 |---|---|---|
 |Github Actions|Linux|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
+|Travis|MacOS|??|
+|AppVeyor|Windowsx32?|??|
+
+URI stands for Unified Resource Identifier.
+
+This interpreter is used to lex and parse URIs in order to
+identify its components, specially to distinguish whether the host is 
+IPv4, IPv6, or Registered Name.
 
 ---
-Analyse an URI to distinguish:
+URI components:
 * Scheme
 * Authority
 * Path
@@ -25,7 +32,7 @@ And the host can be:
 
 The minimum required components are:
 * Scheme
-* Host
+* Host ?
 * Path
 
 ---
