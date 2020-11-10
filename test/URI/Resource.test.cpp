@@ -1,12 +1,11 @@
 //
 // Created by juan.castellanos on 3/10/20.
 //
-#include "URI/IParser.hpp"
-//#include "URI/IValidator.hpp"
-//#include "URI/URI.hpp"
+//#include "URI/IResource.h"
+#include "URI/Resource.h"
 #include <gtest/gtest.h>
 
-//using namespace URI;
+using namespace urii;
 
 class MockIParser : public IParseStrategy
 {
@@ -49,8 +48,8 @@ telnet://192.0.2.16:80/
 └─┬──┘   └─────┬─────┘│
 scheme     authority  path
 */
-auto uri3SchemeAuthV4Path = "telnet://192.0.2.16:80/";
-auto uri3SchemeAuthV4Path2 = "telnet://192.0.2.16:80/path";
+auto uri3SchemeAuthV4      = "telnet://192.0.2.16:80/";
+auto uri3SchemeAuthV4Path  = "telnet://192.0.2.16:80/path";
 
 /*
 ldap://[2001:db8::7]/c=GB?objectClass?one
@@ -120,6 +119,34 @@ TEST_F(URIFixture, Case1ValidSchemeAndPath4)
   EXPECT_STREQ(uri.get(Component::path).c_str(), "comp.infosystems.www.servers.unix");
 }
 
+TEST_F(URIFixture, Case2ValidSchemeAndAuthorityV4)
+{
+  Resource uri{uri3SchemeAuthV4};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "telnet");
+  EXPECT_STREQ(uri.get(Component::authority).c_str(), "192.0.2.16:80");
+}
+
+TEST_F(URIFixture, Case3ValidSchemeAuthV4Path)
+{
+  Resource uri{uri3SchemeAuthV4Path};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "telnet");
+  EXPECT_STREQ(uri.get(Component::authority).c_str(), "192.0.2.16:80");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "path");
+}
+
+TEST_F(URIFixture, Case3ValidSchemeAuthV6PathQuery)
+{
+  Resource uri{uri4SchemeAuthV6PathQuery};
+
+  EXPECT_TRUE(uri.validate());
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "ldap");
+  EXPECT_STREQ(uri.get(Component::authority).c_str(), "[2001:db8::7]");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "c=GB?objectClass?one");
+}
 
 TEST_F(URIFixture, Case4Valid5CompsHostRN)
 {
@@ -128,6 +155,18 @@ TEST_F(URIFixture, Case4Valid5CompsHostRN)
   EXPECT_TRUE(uri.validate(Host::RegName));
   EXPECT_STREQ(uri.get(Component::scheme).c_str(), "https");
   EXPECT_STREQ(uri.get(Component::authority).c_str(), "john.doe@example.com:123");
-  EXPECT_STREQ(uri.get(Component::path).c_str(), "forum"); // should be forum + questions
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "/forum/questions/?tag=networking&order=newest#top");
+}
+
+TEST_F(URIFixture, LazyCase4Valid5CompsHostRN)
+{
+  Resource uri;
+
+  uri.set(uri5SchemeAuthRNPathQueryFrag);
+
+  EXPECT_TRUE(uri.validate(Host::Unknown));
+  EXPECT_STREQ(uri.get(Component::scheme).c_str(), "https");
+  EXPECT_STREQ(uri.get(Component::authority).c_str(), "john.doe@example.com:123");
+  EXPECT_STREQ(uri.get(Component::path).c_str(), "/forum/questions/?tag=networking&order=newest#top");
 
 }
