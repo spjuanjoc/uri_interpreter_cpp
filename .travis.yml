@@ -12,5 +12,5 @@ script:
   - cd build
   - conan install ..
   - cmake .. -G "Xcode" -DENABLE_CONAN=True -DENABLE_TESTS=True
-  - cmake --build . -jobs 2
+  - cmake --build .
   - ctest -V -j2
