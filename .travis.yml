@@ -1,0 +1,16 @@
+language: cpp
+os: osx
+compiler: clang
+osx_image: xcode11.2
+
+install:
+  - pip install conan
+  - conan user
+
+script:
+  - mkdir build
+  - cd build
+  - conan install ..
+  - cmake .. -G "Xcode" -DENABLE_CONAN=True -DENABLE_TESTS=True
+  - cmake --build . -- -j2
+  - ctest -j2 -V
