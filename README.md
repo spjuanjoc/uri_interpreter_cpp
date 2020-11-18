@@ -1,10 +1,10 @@
 # URI interpreter C++
 
-|CI|Platform|Build Status|
-|---|---|---|
-|Github Actions|Linux|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
-|Travis|MacOS|??|
-|AppVeyor|Windowsx32?|??|
+|CI|Platform|Compiler|Build Status|
+|---|---|---|---|
+|Github Actions|Linux Ubuntu 18.04|gcc-7|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
+|Travis|MacOS darwin x86_64|clang-11|[![Build Status](https://travis-ci.com/spjuanjoc/uri_interpreter_cpp.svg?branch=main)](https://travis-ci.com/spjuanjoc/uri_interpreter_cpp)|
+|AppVeyor|Windowsx32?|MSVC|??|
 
 URI stands for Unified Resource Identifier.
 
