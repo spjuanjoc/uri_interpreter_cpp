@@ -38,7 +38,7 @@
 *cmake-build-*
 /CMakeFiles
 Makefile
-/build
+build
 
 # cmake files
 #*.cmake
