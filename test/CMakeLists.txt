@@ -22,6 +22,7 @@ set(INCLUDES include)
 include_directories(PUBLIC ${INCLUDES})
 target_include_directories(${TEST_NAME} PUBLIC ${INCLUDES})
 
+target_compile_features(${TEST_NAME} PUBLIC cxx_std_17)
 # Link to the lib
 #target_link_libraries(${TEST_NAME} ${LIB_PROJECT_NAME})
 

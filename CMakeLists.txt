@@ -46,6 +46,7 @@ set(SOURCES
 
 # ---
 # target instructions must be set after add_executable or add_library instructions
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 target_compile_options(${PROJECT_NAME} INTERFACE ${PROJECT_OPTIONS})
 
