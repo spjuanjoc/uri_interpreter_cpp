@@ -7,7 +7,7 @@ class UriInterpreterCppConan(ConanFile):
     author = "Juan Jose Castellanos juanchocaste@gmail.com"
     url = "https://github.com/spjuanjoc/uri_interpreter_cpp"
     description = "Interpreter to lex and parse URI"
-    topics = ("conan", "URI")
+    topics = ("URI", "interpreter", "lex", "parse")
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = {"shared": False}
