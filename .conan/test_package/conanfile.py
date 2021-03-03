@@ -4,7 +4,7 @@ from conans import ConanFile, CMake, tools
 class UriInterpreterCppTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
-    requires = "uri_interpreter_cpp/0.0.1"
+    # requires = "uri_interpreter_cpp/0.0.1"
 
     def build(self):
         cmake = CMake(self)

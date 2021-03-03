@@ -91,7 +91,7 @@ It generates the example files:
 
 ## Modify the test_package
 
-1. Add in the conanfile inside test_package:
+1. Add in the conanfile inside test_package: (not really needed)
     ```
     requires = "uri_interpreter_cpp/0.0.1"
     ```
@@ -145,3 +145,30 @@ The files will be stored under:
 And the lib will be copied to the example's `build/` folder
 
 
+## For versioning
+
+1. Create config.yml
+    ```
+    versions:
+      0.0.1:
+        folder: versions
+      0.0.2:
+        folder: versions
+    ```
+
+2. Inside versions/ create conandata.yml with SHAs for each release
+    ```
+    sources:
+      0.0.1:
+        url: https://github.com/repo/v0.0.1.tar.gz
+        sha256: 54BE...A13BDA
+      0.0.2:
+        url: https://github.com/repo/v0.0.2.tar.gz
+        sha256: 54BE...A13BDB
+    ```
+
+3. Remove version from conanfile.py
+
+---
+
+See example: [catch2 recipe](https://github.com/conan-io/conan-center-index/tree/master/recipes/catch2)

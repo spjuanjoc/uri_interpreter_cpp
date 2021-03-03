@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(uri_interpreter_cpp VERSION 0.0.2 LANGUAGES CXX)
+project(urii VERSION 0.0.2 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD 17)
 
 add_executable("${PROJECT_NAME}_runner" src/main.cpp)
 add_library(${PROJECT_NAME} STATIC)

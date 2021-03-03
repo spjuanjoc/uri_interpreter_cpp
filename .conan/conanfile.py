@@ -1,13 +1,13 @@
 from conans import ConanFile, CMake, tools
 
-class UriInterpreterCppConan(ConanFile):
-    name = "uri_interpreter_cpp"
+class UriiConan(ConanFile):
+    name = "urii"
     version = "0.0.1"
     license = "MIT"
     author = "Juan Jose Castellanos juanchocaste@gmail.com"
     url = "https://github.com/spjuanjoc/uri_interpreter_cpp"
     description = "Interpreter to lex and parse URI"
-    topics = ("URI", "interpreter", "lex", "parse")
+    topics = ("conan","URI", "interpreter", "lex", "parse")
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = {"shared": False}
