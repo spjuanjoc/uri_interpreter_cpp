@@ -1,79 +1,72 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
-project(urii VERSION 0.0.2 LANGUAGES CXX)
+project(urii VERSION 0.0.3 LANGUAGES CXX)
 
-#set(CMAKE_CXX_STANDARD 17)
-
-add_executable("${PROJECT_NAME}_runner" src/main.cpp)
-add_library(${PROJECT_NAME} STATIC)
 
 # Options
-option(ENABLE_PCH         "Enable Precompiled Headers" FALSE)
-option(ENABLE_TESTS       "Enable tests" FALSE)
-option(ENABLE_CONAN       "Enable Conan" FALSE)
-option(ENABLE_WARN_AS_ERR "Treat compiler warnings as errors" FALSE)
-option(ENABLE_COVERAGE    "Enable gcov coverage" FALSE)
+option(ENABLE_PCH "Enable Precompiled Headers" False)
+option(ENABLE_TESTS "Enable tests" False)
+option(ENABLE_COVERAGE "Enable gcov coverage" False)
+option(ENABLE_WARN_AS_ERR "Treat compiler warnings as errors" False)
 
-# Standard compiler warnings
-set(GCC_OPTIONS
-#    -O3
-    -Wall
-    )
-
-if(ENABLE_WARN_AS_ERR)
-  set(GCC_OPTIONS ${GCC_OPTIONS} -Werror)
-endif()
-
-# Compiler
-if(MSVC)
-  set(PROJECT_OPTIONS ${MSVC_WARNINGS})
-elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-  set(PROJECT_OPTIONS ${CLANG_WARNINGS})
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(PROJECT_OPTIONS ${GCC_OPTIONS})
-  if(ENABLE_COVERAGE)
-    message("Using gcov")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-  endif()
-else()
-  message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
-endif()
 
 # Sources
 set(SOURCES
     src/URIHandler.cpp
     )
 
+#add_executable("${PROJECT_NAME}_runner" src/main.cpp)
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+
+## Compiler options
+include(cmake/CompilerOptions.cmake)
+set_project_options(${PROJECT_NAME})
+
+
+## Setup Conan
+# Download automatically, you can also just copy the conan.cmake file
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+  message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+  file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+      "${CMAKE_BINARY_DIR}/conan.cmake")
+endif ()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP NO_OUTPUT_DIRS)
+
+
+## Find third-party packages
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR})
+find_package(fmt REQUIRED)
+
 # ---
-# target instructions must be set after add_executable or add_library instructions
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+#target_sources("${PROJECT_NAME}_runner" PUBLIC ${SOURCES} src/main.cpp)
+#target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
 
-target_compile_options(${PROJECT_NAME} INTERFACE ${PROJECT_OPTIONS})
 
-# Get the sources
-target_sources("${PROJECT_NAME}_runner" PUBLIC ${SOURCES} src/main.cpp)
-target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
-
-# Get the headers
-set(INCLUDES include)
-include_directories(PUBLIC ${INCLUDES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES})
-
-# Custom Options
-if(ENABLE_PCH)
-  # Since CMake 3.15
-  set(PC_HEADERS <vector> <string>)
-  if (ENABLE_CONAN)
-    set(PC_HEADERS ${PC_HEADERS} <gtest/gtest.h>)
-  endif()
-
+## Check custom options
+if (ENABLE_PCH) # Since CMake 3.15
+  set(PC_HEADERS <vector> <string> <map> <utility> <algorithm> <cctype> <ostream> <memory> <sstream> <gtest/gtest.h>)
   target_precompile_headers(${PROJECT_NAME} INTERFACE ${PC_HEADERS})
   message("Pre compiled headers enabled")
-endif()
+endif ()
 
-if(ENABLE_TESTS)
-  enable_testing()
+if (ENABLE_TESTS)
+  message(STATUS "Tests enabled")
+  enable_testing() # Must be placed before add_subdirectory
   add_subdirectory(test)
-elseif()
-  message("Tests not included")
-endif()
+endif ()
+
+
+## Install commands
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION "/opt/${PROJECT_NAME}"
+    )
+
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Juan Jose Castellanos <juancho.312@hotmail.com>")
+include(CPack)
