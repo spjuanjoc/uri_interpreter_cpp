@@ -2,9 +2,9 @@
 
 |CI|Platform|Compiler|Build Status|
 |---|---|---|---|
-|Github Actions|Linux Ubuntu 18.04|gcc-7|![CMake](https://github.com/spjuanjoc/uri_parser_cpp/workflows/CMake/badge.svg)|
-|Travis|MacOS darwin x86_64|clang-11|[![Build Status](https://travis-ci.com/spjuanjoc/uri_interpreter_cpp.svg?branch=main)](https://travis-ci.com/spjuanjoc/uri_interpreter_cpp)|
-|AppVeyor|Windowsx32?|MSVC|??|
+|Github Actions | Linux Ubuntu  | gcc     | [![linux](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml)   |
+|Github Actions | MacOS         | clang   | [![macos](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml) |
+|AppVeyor       | Windows       | MSVC    | ??|
 
 URI stands for Unified Resource Identifier.
 
