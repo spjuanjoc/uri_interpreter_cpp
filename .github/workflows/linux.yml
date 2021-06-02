@@ -29,11 +29,6 @@ jobs:
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
 
-#      - name: Install third-party packages
-#        shell: bash
-#        working-directory: ${{runner.workspace}}/build
-#        run: conan install $GITHUB_WORKSPACE
-
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
@@ -54,7 +49,7 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         run: ctest -C ${{matrix.build_type}}
 
-#      - name: Coverage
-#        shell: bash
-#        working-directory: ${{runner.workspace}}/build
-#        run: bash <(curl -s https://codecov.io/bash)
+      - name: Coverage
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: bash <(curl -s https://codecov.io/bash)
