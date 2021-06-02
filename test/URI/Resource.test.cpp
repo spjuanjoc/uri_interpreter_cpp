@@ -1,7 +1,7 @@
 //
 // Created by juan.castellanos on 3/10/20.
 //
-//#include "URI/IResource.h"
+
 #include "URI/Resource.h"
 #include <gtest/gtest.h>
 
