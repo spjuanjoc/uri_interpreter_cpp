@@ -9,64 +9,74 @@ using namespace urii;
 
 class MockIParser : public IParseStrategy
 {
-
 };
 
 class URIFixture : public testing::Test
-{};
+{
+};
 
-/*
-mailto:John.Doe@example.com
-└─┬──┘ └────┬─────────────┘
-scheme     path
-*/
-auto uri2SchemePath = "mailto:John.Doe@example.com";
-
-/*
-tel:+1-816-555-1212
-└┬┘ └──────┬──────┘
-scheme    path
-*/
-auto uri2SchemePath2 = "tel:+1-816-555-1212";
-
-/*
-urn:oasis:names:specification:docbook:dtd:xml:4.1.2
-└┬┘ └──────────────────────┬──────────────────────┘
-scheme                    path
+/**
+ *
+ * mailto:John.Doe@example.com
+ * └─┬──┘ └────┬─────────────┘
+ * scheme     path
  */
-auto uri2SchemePath3 = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+constexpr auto uri2SchemePath = "mailto:John.Doe@example.com";
 
-/*
-news:comp.infosystems.www.servers.unix
-└┬─┘ └─────────────┬─────────────────┘
-scheme            path
+/**
+ *
+ * tel:+1-816-555-1212
+ * └┬┘ └──────┬──────┘
+ * scheme    path
 */
-auto uri2SchemePath4 = "news:comp.infosystems.www.servers.unix";
+constexpr auto uri2SchemePath2 = "tel:+1-816-555-1212";
 
-/*
-telnet://192.0.2.16:80/
-└─┬──┘   └─────┬─────┘│
-scheme     authority  path
-*/
-auto uri3SchemeAuthV4      = "telnet://192.0.2.16:80/";
-auto uri3SchemeAuthV4Path  = "telnet://192.0.2.16:80/path";
-
-/*
-ldap://[2001:db8::7]/c=GB?objectClass?one
-└┬─┘   └─────┬─────┘└─┬─┘ └──────┬──────┘
-scheme   authority   path      query
-*/
-auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
-
-/*
-          userinfo       host      port
-          ┌──┴───┐ ┌──────┴──────┐ ┌┴┐
-  https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top
-  └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
-  scheme          authority                  path                 query           fragment
+/**
+ *
+ * urn:oasis:names:specification:docbook:dtd:xml:4.1.2
+ * └┬┘ └──────────────────────┬──────────────────────┘
+ * scheme                    path
  */
-auto uri5SchemeAuthRNPathQueryFrag{"https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
-auto uri5SchemeAuthRNPathQueryFrag2{"https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
+constexpr auto uri2SchemePath3 = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+
+/**
+ *
+ * news:comp.infosystems.www.servers.unix
+ * └┬─┘ └─────────────┬─────────────────┘
+ * scheme            path
+*/
+constexpr auto uri2SchemePath4 = "news:comp.infosystems.www.servers.unix";
+
+/**
+ *
+ * telnet://192.0.2.16:80/
+ * └─┬──┘   └─────┬─────┘│
+ * scheme     authority  path
+*/
+constexpr auto uri3SchemeAuthV4     = "telnet://192.0.2.16:80/";
+constexpr auto uri3SchemeAuthV4Path = "telnet://192.0.2.16:80/path";
+
+/**
+ *
+ * ldap://[2001:db8::7]/c=GB?objectClass?one
+ * └┬─┘   └─────┬─────┘└─┬─┘ └──────┬──────┘
+ * scheme   authority   path      query
+*/
+constexpr auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
+
+/**
+ *
+ *           userinfo       host      port
+ *          ┌──┴───┐ ┌──────┴──────┐ ┌┴┐
+ *  https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top
+ *  └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
+ *  scheme          authority                  path                 query           fragment
+ */
+constexpr auto uri5SchemeAuthRNPathQueryFrag{
+  "https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
+constexpr auto uri5SchemeAuthRNPathQueryFrag2{
+  "https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
+
 //
 //TEST_F(URIFixture, lexSchemeAndPathOnly)
 //{
@@ -168,5 +178,4 @@ TEST_F(URIFixture, LazyCase4Valid5CompsHostRN)
   EXPECT_STREQ(uri.get(Component::scheme).c_str(), "https");
   EXPECT_STREQ(uri.get(Component::authority).c_str(), "john.doe@example.com:123");
   EXPECT_STREQ(uri.get(Component::path).c_str(), "/forum/questions/?tag=networking&order=newest#top");
-
 }
