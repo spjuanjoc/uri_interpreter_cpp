@@ -58,6 +58,9 @@ Plan:
 
 // usage
 
+namespace urii
+{
+
 /**
  * Host types: IPv4, IPv6, Registered Name.
  */
@@ -75,26 +78,25 @@ enum class HostType : std::uint32_t
 class UriHandler
 {
 public:
+  UriHandler() = default;
   /**
    * Parses the URI with scheme and authority as mandatory
    * @param uri
    */
   explicit UriHandler(std::string uri);
-  UriHandler() = default;
 
-  bool   HasPort() const;
-  bool   IsValidUri() const;
-  std::string GetAuthority() const;
-  std::string GetFragment() const;
-  std::string GetHost() const;
-  std::string GetPath() const;
-  std::string GetPort() const;
-  std::string GetQuery() const;
-  std::string GetScheme() const;
-  std::string GetUserInfo() const;
+  bool        hasPort() const;
+  bool        isValidUri() const;
+  std::string getAuthority() const;
+  std::string getFragment() const;
+  std::string getHost() const;
+  std::string getPath() const;
+  std::string getPort() const;
+  std::string getQuery() const;
+  std::string getScheme() const;
+  std::string getUserInfo() const;
 
 private:
-
   /**
    * Analyses the grammar of the URI's authority
    *
@@ -112,7 +114,7 @@ private:
   void parseUri(const std::string& uri);
 
   // Optional
-  static bool        isValidHexet(const std::string& hextet);
+  static bool        isValidHextet(const std::string& hextet);
   static bool        isValidIPv4(const std::string& host);
   static bool        isValidIPv6(const std::string& host);
   static bool        isValidRegName(const std::string& host);
@@ -123,7 +125,7 @@ private:
 
 
   bool m_has_port{false};
-  bool m_is_valid_URI{false};
+  bool m_is_valid_uri{false};
 
   std::string m_uri;
   std::string m_scheme;
@@ -141,3 +143,5 @@ private:
 
   HostType m_host_type{HostType::Unknown};
 };
+
+}  // namespace urii

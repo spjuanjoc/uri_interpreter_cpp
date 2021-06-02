@@ -10,22 +10,26 @@ using std::stringstream;
 using std::uint32_t;
 using std::vector;
 
-const uint32_t MIN_PORT{0};
-const uint32_t MAX_PORT{65535};
+constexpr auto MIN_PORT = 0;
+constexpr auto MAX_PORT = 65535;
 
+namespace urii
+{
 UriHandler::UriHandler(std::string uri) : m_uri{std::move(uri)}
 {
   parseUri(m_uri);
 }
-bool UriHandler::HasPort() const
+
+bool UriHandler::hasPort() const
 {
   return m_has_port;
 }
 
-bool UriHandler::IsValidUri() const
+bool UriHandler::isValidUri() const
 {
-  return m_is_valid_URI;
+  return m_is_valid_uri;
 }
+
 bool UriHandler::isValidIPv4(const std::string& host)
 {
   std::string sIP{host};
@@ -48,7 +52,8 @@ bool UriHandler::isValidIPv4(const std::string& host)
   }
   return allDigits;
 }
-bool UriHandler::isValidHexet(const std::string& hextet)
+
+bool UriHandler::isValidHextet(const std::string& hextet)
 {
   std::stringstream ss;
   int               outHex = 0x0;
@@ -59,12 +64,13 @@ bool UriHandler::isValidHexet(const std::string& hextet)
   ss << outHex;
   return (ss.str() == hextet);
 }
+
 bool UriHandler::isValidIPv6(const std::string& host)
 {
   const uint32_t MAX_NUM_OF_HEXETS = 8;
   bool           valid             = true;
-  std::string         result            = cropIPv6(host);
-  std::string         section{result};
+  std::string    result            = cropIPv6(host);
+  std::string    section{result};
   std::replace_if(
     section.begin(),
     section.end(),
@@ -78,7 +84,7 @@ bool UriHandler::isValidIPv6(const std::string& host)
   {
     std::string hexet;
     ss >> hexet;
-    valid &= isValidHexet(hexet);
+    valid &= isValidHextet(hexet);
     ++counter;
   }
 
@@ -89,23 +95,23 @@ bool UriHandler::isValidIPv6(const std::string& host)
 
   return valid;
 }
+
 bool UriHandler::isValidRegName(const std::string& host)
 {
   return true;  /// \todo implement
 }
+
 std::string UriHandler::cropIPv6(const std::string& ip)
 {
   std::string result{ip};
-  auto   pos1 = result.find(']');
+  auto        pos1 = result.find(']');
 
   if (pos1 != std::string::npos)
   {
     result = result.substr(0, pos1 + 1);
   }
 
-  result.erase(std::remove_if(result.begin(),
-                              result.end(),
-                              [](char c) { return (c == '[' || c == ']'); }),
+  result.erase(std::remove_if(result.begin(), result.end(), [](char c) { return (c == '[' || c == ']'); }),
                result.end());
   auto pos = result.find('%');
 
@@ -116,44 +122,53 @@ std::string UriHandler::cropIPv6(const std::string& ip)
 
   return result;
 }
-std::string UriHandler::GetAuthority() const
+
+std::string UriHandler::getAuthority() const
 {
   return m_authority;
 }
-std::string UriHandler::GetFragment() const
+
+std::string UriHandler::getFragment() const
 {
   return m_fragment;
 }
-std::string UriHandler::GetHost() const
+
+std::string UriHandler::getHost() const
 {
   return m_full_authority.m_host;
 }
-std::string UriHandler::GetPath() const
+
+std::string UriHandler::getPath() const
 {
   return m_path;
 }
-std::string UriHandler::GetPort() const
+
+std::string UriHandler::getPort() const
 {
   return m_full_authority.m_port;
 }
-std::string UriHandler::GetQuery() const
+
+std::string UriHandler::getQuery() const
 {
   return m_query;
 }
-std::string UriHandler::GetScheme() const
+
+std::string UriHandler::getScheme() const
 {
   return m_scheme;
 }
-std::string UriHandler::GetUserInfo() const
+
+std::string UriHandler::getUserInfo() const
 {
   return m_full_authority.m_user_info;
 }
+
 void UriHandler::parseAuthority(const std::string& authority)
 {
   const auto& itIpVersion = authority.find(']');
   if (itIpVersion != std::string::npos)
   {
-    std::string      port   = authority.substr(itIpVersion);
+    std::string port   = authority.substr(itIpVersion);
     const auto& itPort = port.find(':');
     if (itPort != std::string::npos)
     {
@@ -162,62 +177,63 @@ void UriHandler::parseAuthority(const std::string& authority)
     }
     if (isValidIPv6(authority))
     {
-      m_host_type      = HostType::IPv6;
-      m_is_valid_URI  = true;
+      m_host_type             = HostType::IPv6;
+      m_is_valid_uri          = true;
       m_full_authority.m_host = authority.substr(0, itIpVersion + 1);
     }
     else
     {
-      m_is_valid_URI = false;
+      m_is_valid_uri = false;
       m_host_type    = HostType::Unknown;
     }
   }
   else
   {
-    std::string      host   = authority;
+    std::string host   = authority;
     const auto& itPort = authority.find(':');
 
     if (itPort != std::string::npos)
     {
-      std::string tempPort     = authority;
-      tempPort            = tempPort.substr(itPort + 1);
-      const auto& itValid = tempPort.find(':');
+      std::string tempPort = authority;
+      tempPort             = tempPort.substr(itPort + 1);
+      const auto& itValid  = tempPort.find(':');
       if (itValid != std::string::npos)
       {
-        m_is_valid_URI = false;
+        m_is_valid_uri = false;
         return;
         //ipv6 with no []
       }
       m_has_port = true;
-      host     = host.substr(0, itPort);
+      host       = host.substr(0, itPort);
       parsePort(authority, itPort);
     }
     if (isValidIPv4(host))
     {
-      m_host_type      = HostType::IPv4;
-      m_is_valid_URI  = true;
+      m_host_type             = HostType::IPv4;
+      m_is_valid_uri          = true;
       m_full_authority.m_host = host;
     }
     else if (isValidRegName(host))
     {
-      m_host_type      = HostType::RegName;
-      m_is_valid_URI  = true;
+      m_host_type             = HostType::RegName;
+      m_is_valid_uri          = true;
       m_full_authority.m_host = host;
     }
     else
     {
-      m_is_valid_URI = false;
+      m_is_valid_uri = false;
       m_host_type    = HostType::Unknown;
     }
   }
   parseUserInfo();
 }
+
 void UriHandler::parsePort(const std::string& port, const unsigned& position)
 {
   m_full_authority.m_port = port.substr(position);
   m_full_authority.m_port.erase(std::remove_if(m_full_authority.m_port.begin(),
                                                m_full_authority.m_port.end(),
-                                       [](unsigned char c) { return !isdigit(c); }),
+                                               [](unsigned char c) { return !isdigit(c); }),
                                 m_full_authority.m_port.end());
   auto uPort = std::stoi(m_full_authority.m_port);
 
@@ -225,18 +241,20 @@ void UriHandler::parsePort(const std::string& port, const unsigned& position)
   if (uPort < MIN_PORT || uPort > MAX_PORT)
   {
     m_full_authority.m_port = "";
-    m_is_valid_URI  = false;
+    m_is_valid_uri          = false;
   }
 }
+
 void UriHandler::parseUserInfo()
 {
   auto it = m_full_authority.m_host.find('@');
   if (it != std::string::npos)
   {
     m_full_authority.m_user_info = m_full_authority.m_host.substr(0, it);
-    m_full_authority.m_host     = m_full_authority.m_host.substr(it + 1);
+    m_full_authority.m_host      = m_full_authority.m_host.substr(it + 1);
   }
 }
+
 void UriHandler::parseUri(const std::string& uri)
 {
   std::string sUri{uri};
@@ -258,8 +276,7 @@ void UriHandler::parseUri(const std::string& uri)
   if (vecSize >= 2)
   {
     m_scheme = uriVec.at(0);
-    m_scheme.erase(std::remove_if(m_scheme.begin(), m_scheme.end(),
-                                 [](unsigned char c) { return !isalpha(c); }),
+    m_scheme.erase(std::remove_if(m_scheme.begin(), m_scheme.end(), [](unsigned char c) { return !isalpha(c); }),
                    m_scheme.end());
     m_authority = uriVec.at(1);
     parseAuthority(m_authority);
@@ -278,22 +295,25 @@ void UriHandler::parseUri(const std::string& uri)
 
   if (vecSize < 2)
   {
-    m_is_valid_URI = false;
+    m_is_valid_uri = false;
   }
 }
+
 void UriHandler::parsePath()
 {
   std::string tmp = m_path;
-  auto   it  = tmp.find('#');
+  auto        it  = tmp.find('#');
   if (it != std::string::npos)
   {
     m_fragment = tmp.substr(it + 1);
-    m_path    = tmp.substr(0, it);
+    m_path     = tmp.substr(0, it);
   }
   auto it2 = m_path.find('?');
   if (it2 != std::string::npos)
   {
     m_query = m_path.substr(it2 + 1);
-    m_path = tmp.substr(0, it2);
+    m_path  = tmp.substr(0, it2);
   }
 }
+
+}  // namespace urii
