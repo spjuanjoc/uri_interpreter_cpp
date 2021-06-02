@@ -12,7 +12,7 @@ option(ENABLE_WARN_AS_ERR "Treat compiler warnings as errors" False)
 
 # Sources
 set(SOURCES
-    src/URIHandler.cpp
+    src/UriHandler.cpp
     )
 
 #add_executable("${PROJECT_NAME}_runner" src/main.cpp)
