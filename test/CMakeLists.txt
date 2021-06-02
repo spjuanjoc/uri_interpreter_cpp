@@ -15,6 +15,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR})
 find_package(fmt REQUIRED)
 find_package(GTest REQUIRED)
 
-target_link_libraries(${TEST_NAME} PRIVATE fmt::fmt gtest gmock pthread)
+target_link_libraries(${TEST_NAME} PRIVATE fmt::fmt GTest::gtest GTest::gmock pthread)
 target_compile_features(${TEST_NAME} PUBLIC cxx_std_17)
 target_include_directories(${TEST_NAME} PRIVATE ../include)
