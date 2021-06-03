@@ -1,3 +1,7 @@
+/**
+ * Created by juan.castellanos on 2/06/21.
+*/
+
 #include "URI/Resource.h"
 
 #include "URI/Parser.h"
@@ -74,25 +78,30 @@ TEST_CASE_METHOD(ResourceFixture, "should validate authority IPv6, path, and que
   CHECK(uri.validate());
   CHECK(uri.get(Component::scheme) == "ldap");
   CHECK(uri.get(Component::authority) == "[2001:db8::7]");
-  CHECK(uri.get(Component::path) == "c=GB?objectClass?one");
+  CHECK(uri.get(Component::path) == "c=GB");
+  CHECK(uri.get(Component::query) == "objectClass?one");
 }
 
 TEST_CASE_METHOD(ResourceFixture, "should validate full URI", "[case4]")
 {
-  uri.set(registeredname_path_query_fragment);
+  uri.set(name_path_query_fragment);
 
   CHECK(uri.validate(Host::RegName));
   CHECK(uri.get(Component::scheme) == "https");
   CHECK(uri.get(Component::authority) == "john.doe@example.com:123");
-  CHECK(uri.get(Component::path) == "/forum/questions/?tag=networking&order=newest#top");
+  CHECK(uri.get(Component::path) == "/forum/questions/");
+  CHECK(uri.get(Component::query) == "tag=networking&order=newest");
+  CHECK(uri.get(Component::fragment) == "top");
 }
 
 TEST_CASE("should validate full URI from constructor", "[case4]")
 {
-  Resource uri{registeredname_path_query_fragment_2};
+  Resource uri{name_path_query_fragment_2};
 
   CHECK(uri.validate(Host::Unknown));
   CHECK(uri.get(Component::scheme) == "https");
   CHECK(uri.get(Component::authority) == "sitechecker.pro:8080");
-  CHECK(uri.get(Component::path) == "/knowledge-base/path?name=article&topic=seo#top");
+  CHECK(uri.get(Component::path) == "/knowledge-base/path");
+  CHECK(uri.get(Component::query) == "name=article&topic=seo");
+  CHECK(uri.get(Component::fragment) == "top");
 }
