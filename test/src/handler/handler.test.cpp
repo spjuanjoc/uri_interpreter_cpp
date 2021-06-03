@@ -2,7 +2,7 @@
 // Created by juan.castellanos on 2/10/20.
 //
 
-#include "URIHandler.h"
+#include "UriHandler.h"
 #include <gtest/gtest.h>
 
 struct HandlerFixture : public testing::Test

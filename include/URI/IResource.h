@@ -1,6 +1,7 @@
-//
-// Created by juan.castellanos on 3/10/20.
-//
+/**
+ * Created by juan.castellanos on 3/10/20.
+*/
+
 #pragma once
 
 #include <string>
@@ -21,10 +22,15 @@ enum class Component : std::uint32_t;
 class IResource
 {
 public:
-  virtual ~IResource() = default;
+  IResource()                 = default;
+  virtual ~IResource()        = default;
+  IResource(const IResource&) = default;
+  IResource(IResource&&)      = default;
+  IResource& operator=(const IResource&) = default;
+  IResource& operator=(IResource&&) = default;
 
   virtual bool        validate(Host) = 0;
   virtual std::string get(Component) = 0;
 };
 
-}
+}  // namespace urii

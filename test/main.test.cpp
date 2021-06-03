@@ -1,11 +1,7 @@
-//
-// Created by juan.castellanos on 2/10/20.
-//
+/**
+ * Created by juan.castellanos on 10/11/20.
+*/
 
-#include "gtest/gtest.h"
-
-int main(int argc, char* argv[])
-{
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+#define CATCH_CONFIG_MAIN  // Tell Catch to provide a main() - only do this in one cpp file
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
+#include <catch2/catch.hpp>

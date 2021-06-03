@@ -1,225 +1,243 @@
-//
-// Created by juan.castellanos on 10/11/20.
-//
+/**
+ * Created by juan.castellanos on 10/11/20.
+*/
 #pragma once
 
-#include "Resource.h"
+#include "Components.h"
+#include "ILexer.h"
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <sstream>
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace urii
 {
 /**
  * 4. Usage - lex
  */
-Components case1(const std::string& schemeAndPath);
-Components case2(const std::vector<std::string>& uri);
-Components case3(const std::vector<std::string>& uri);
-Components case4(const std::vector<std::string>& uri);
-
-Components lex(const std::string& input)
+class Lexer : virtual public ILexer
 {
-  Components  result;
-  std::string slashLex{input};
+public:
+  Lexer() = default;
 
-  std::replace_if(
-    std::begin(slashLex),
-    std::end(slashLex),
-    [](const char c) { return c == '/'; },
-    ' ');
+  explicit Lexer(std::string_view uri) : m_uri(uri) {}
 
-  std::istringstream       iss{slashLex};
-  std::vector<std::string> components{std::istream_iterator<std::string>{iss},
-                                      std::istream_iterator<std::string>{}};
+  virtual ~Lexer()    = default;
+  Lexer(const Lexer&) = default;
+  Lexer(Lexer&&)      = default;
+  Lexer& operator=(const Lexer&) = default;
+  Lexer& operator=(Lexer&&) = default;
 
-  switch (components.size())
+  Components lex() override { return lex(m_uri); }
+
+  void setUri(std::string_view uri) override { m_uri = uri; }
+
+  /**
+   * Performs the tokenization of a resource with '/' as separator
+   *
+   * @param uri The resource.
+   * @return The tokens into a Components struct.
+   */
+  static Components lex(const std::string& uri)
   {
-    case 1:
-      std::cout << "case 1: scheme + path \n";
-      result = case1(components.at(0));
-      break;
-    case 2:
-      std::cout << "case 2: scheme + authority\n";
-      result = case2(components);
-      break;
-    case 3:
-      std::cout << "case 3: single path\n";
-      result = case3(components);
-      break;
-    default:
-      std::cout << "case 4+: multi path\n";
-      result = case4(components);
-      break;
+    Components  result;
+    std::string space_separated_uri{uri};
+
+    std::replace_if(
+      std::begin(space_separated_uri),
+      std::end(space_separated_uri),
+      [](const char c) { return c == '/'; },
+      ' ');
+
+    std::istringstream       iss{space_separated_uri};
+    std::vector<std::string> components{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+
+    switch (components.size())
+    {
+      case 0:
+        break;
+      case 1:
+        //        std::cout << "case 1: scheme + path \n";
+        result = case1(components.at(0));
+        break;
+      case 2:
+        //        std::cout << "case 2: scheme + authority\n";
+        result = case2(components);
+        break;
+      case 3:
+        //        std::cout << "case 3: single path\n";
+        result = case3(components);
+        break;
+      default:
+        //        std::cout << "case 4+: multi path\n";
+        result = case4(components);
+        break;
+    }
+
+    return result;
   }
 
-  return result;
-}
-
-/*
- * URI contains only scheme and path, it does not contain //
- */
-Components case1(const std::string& schemeAndPath)
-{
-  Components result{};
-
-  const auto pos = schemeAndPath.find(':');
-
-  if (pos != std::string::npos)
+protected:
+  /**
+   * Processes the case when URI contains only scheme and path, it does not contain //
+   * @param scheme_and_path
+   * @return
+   */
+  static Components case1(const std::string& scheme_and_path)
   {
-    result.scheme = schemeAndPath.substr(0, pos);
-    result.path   = schemeAndPath.substr(pos + 1);
+    Components result{};
+
+    const auto pos = scheme_and_path.find(':');
+
+    if (pos != std::string::npos)
+    {
+      result.scheme = scheme_and_path.substr(0, pos);
+      result.path   = scheme_and_path.substr(pos + 1);
+    }
+
+    return result;
   }
 
-  // now they can be parsed
-  std::cout << "lex completed\n";
-  return result;
-}
-
-/*
- * URI contains at least scheme and authority
- *
- * scheme .at(0)
- * authority .at(1)
- */
-Components case2(const std::vector<std::string>& uri)
-{
-  Components result{};
-  result.scheme        = uri.at(0);
-  result.fullAuthority = uri.at(1);
-
-  result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                     std::end(result.scheme),
-                                     [](char c) { return c == ':'; }),
-                      std::end(result.scheme));
-
-  // now they can be parsed
-  std::cout << "Scheme: " << result.scheme << '\n';
-  std::cout << "Authority: " << result.fullAuthority << '\n';
-  std::cout << "lex completed\n";
-
-  return result;
-}
-
-/*
- * URI contains scheme + authority, and at least path with a single level
- *
- * scheme .at(0)
- * authority .at(1)
- * path?query#fragment .at(2) where path does not have more than one /
- */
-Components case3(const std::vector<std::string>& uri)
-{
-  Components result{};
-
-  result.scheme        = uri.at(0);
-  result.fullAuthority = uri.at(1);
-  result.path          = uri.at(2);
-
-  result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                     std::end(result.scheme),
-                                     [](char c) { return c == ':'; }),
-                      std::end(result.scheme));
-
-  // now they can be parsed
-  std::cout << "Scheme: " << result.scheme << '\n';
-  std::cout << "Authority: " << result.fullAuthority << '\n';
-  std::cout << "Path+: " << result.path << '\n';
-  std::cout << "lex completed\n";
-
-  return result;
-}
-
-std::string rejoin(std::vector<std::string>&& uri)
-{
-  std::string result;
-
-  for (const auto& it : uri)
+  /**
+   * Processes the case when URI contains at least scheme and authority
+   * scheme .at(0)
+   * authority .at(1)
+   * @param uri
+   * @return
+   */
+  static Components case2(const std::vector<std::string>& uri)
   {
-    result.append("/");
-    result.append(it);
+    Components result{};
+    result.scheme    = uri.at(0);
+    result.authority = uri.at(1);
+
+    result.scheme.erase(std::remove_if(std::begin(result.scheme),
+                                       std::end(result.scheme),
+                                       [](char c) { return c == ':'; }),
+                        std::end(result.scheme));
+
+    return result;
   }
 
-  return result;
-}
+  /**
+   * Process the case when URI contains scheme + authority, and at least path with a single level
+   *
+   * scheme .at(0)
+   * authority .at(1)
+   * path?query#fragment .at(2) where path does not have more than one /
+   * @param uri
+   * @return
+   */
+  static Components case3(const std::vector<std::string>& uri)
+  {
+    Components result{};
 
-/*
- * URI contains scheme + authority, and at least path with a multi level
- *
- * more than 3 means it has/multi/path/
- * take first 2, and join from 3+
- *
- * scheme .at(0)
- * authority .at(1)
- * path?query#fragment .at(2)
- */
-Components case4(const std::vector<std::string>& uri)
-{
-  Components result;
+    result.scheme    = uri.at(0);
+    result.authority = uri.at(1);
+    result.path      = uri.at(2);
 
-  result.scheme        = uri.at(0);
-  result.fullAuthority = uri.at(1);
-  result.path          = rejoin({std::begin(uri) + 2, std::end(uri)});
+    result.scheme.erase(std::remove_if(std::begin(result.scheme),
+                                       std::end(result.scheme),
+                                       [](char c) { return c == ':'; }),
+                        std::end(result.scheme));
 
-  result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                     std::end(result.scheme),
-                                     [](char c) { return c == ':'; }),
-                      std::end(result.scheme));
+    const auto [path, query, fragment] = separatePath(result.path);
 
-  // now they can be parsed
-  std::cout << "Scheme: " << result.scheme << '\n';
-  std::cout << "Authority: " << result.fullAuthority << '\n';
-  std::cout << "Path+: " << result.path << '\n';
-  std::cout << "lex completed\n";
+    result.path     = path;
+    result.query    = query;
+    result.fragment = fragment;
 
-  return result;
-}
+    return result;
+  }
 
-/**
- * 4. Usage - parser
- */
-//...
+  /**
+   * Processes the case when URI contains scheme + authority, and at least path with a multi level
+   *
+   * more than 3 means it has/multi/path/
+   * take first 2, and join from 3+
+   *
+   * scheme .at(0)
+   * authority .at(1)
+   * path?query#fragment .at(2)
+   *
+   * @param uri
+   * @return
+   */
+  static Components case4(const std::vector<std::string>& uri)
+  {
+    Components result;
 
-}
+    result.scheme    = uri.at(0);
+    result.authority = uri.at(1);
+    result.path      = rejoinPath({std::begin(uri) + 2, std::end(uri)});
 
-/**
-Plan:
+    result.scheme.erase(std::remove_if(std::begin(result.scheme),
+                                       std::end(result.scheme),
+                                       [](char c) { return c == ':'; }),
+                        std::end(result.scheme));
 
- 1. Components
-  scheme      mandatory
-  path        mandatory
-  authority
-    host
-    userinfo
-    port
-  query
-  fragment
+    const auto [path, query, fragment] = separatePath(result.path);
 
- 2. Interface
-    IResource
-       Validate(host type: v4, v6, RN)
-        - validate mandatory components
-        - validate host sub component
-        - then validate the rest
-       GetComponent(component)
+    result.path     = path;
+    result.query    = query;
+    result.fragment = fragment;
 
- 3. Implementation
-    Resource
-      validate -> Dynamic Strategy
-          Dynamic host parser
-            Interface IParser
-              IPv6Parser
-              IPv4Parser
-              RNParser
-      get
+    return result;
+  }
 
- 4. Usage
-    lexer
-    parser
-      The dynamic strategy usage class
+  static std::string rejoinPath(std::vector<std::string>&& uri)
+  {
+    std::string result;
 
- 5. resolver?
-    what to do with the parsed data
-    auto parsed = parse("URI");
-    parsed->validate(Host::IPv6);
-    parsed->Get(Component::scheme)
+    for (const auto& it : uri)
+    {
+      result.append("/");
+      result.append(it);
+    }
 
- */
+    return result;
+  }
 
+  static std::tuple<std::string, std::string, std::string> separatePath(const std::string& path_to_end)
+  {
+    std::string path_only{path_to_end};
+    std::string query;
+    std::string fragment;
+
+    const auto query_position = path_to_end.find('?');
+
+    if (query_position != std::string::npos)
+    {
+      path_only                    = path_to_end.substr(0, query_position);
+      query                        = path_to_end.substr(query_position + 1);
+      const auto fragment_position = query.find('#');
+
+      if (fragment_position != std::string::npos)
+      {
+        fragment = query.substr(fragment_position + 1);
+        query    = query.substr(0, fragment_position);
+      }
+    }
+    else
+    {
+      const auto fragment_position = path_to_end.find('#');
+
+      if (fragment_position != std::string::npos)
+      {
+        path_only = path_to_end.substr(0, fragment_position);
+        fragment  = path_to_end.substr(fragment_position + 1);
+      }
+    }
+
+    return {path_only, query, fragment};
+  }
+
+private:
+  std::string m_uri;
+};
+
+}  // namespace urii

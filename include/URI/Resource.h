@@ -1,9 +1,13 @@
-//
-// Created by juan.castellanos on 10/11/20.
-//
+/**
+ * Created by juan.castellanos on 10/11/20.
+*/
+
 #pragma once
 
+#include "Components.h"
 #include "IResource.h"
+#include "Lexer.h"
+
 #include <algorithm>
 #include <iostream>
 #include <iterator>
@@ -16,55 +20,16 @@
 namespace urii
 {
 /**
- * 1. Components
- */
-struct Authority
-{
-  std::string host;
-  std::string userinfo;
-  std::string port;
-};
-
-struct Components
-{
-  std::string scheme;
-  std::string fullAuthority;
-  std::string path;
-  std::string query;
-  std::string fragment;
-  Authority   authority;
-};
-
-enum class Host : std::uint32_t
-{
-  Unknown = 0, /**< 0 */
-  IPv4    = 1, /**< 1 */
-  IPv6    = 2, /**< 2 */
-  RegName = 3  /**< 3 */
-};
-
-enum class Component : std::uint32_t
-{
-  scheme    = 0, /**< 0 */
-  path      = 1, /**< 1 */
-  query     = 2, /**< 2 */
-  fragment  = 3, /**< 3 */
-  authority = 4  /**< 4 */
-};
-
-/**
  * 3. Implementation
  */
 class HostParser;
-Components lex(const std::string& input);
+class Lexer;
 
+/**
+ *
+ */
 class Resource : public IResource
 {
-private:
-  std::string                uri_;
-  std::optional<HostParser*> v4;
-  Components                 components_;
-
 public:
   Resource()                = default;
   Resource(const Resource&) = default;
@@ -73,7 +38,7 @@ public:
   Resource& operator=(Resource&&) = default;
   ~Resource() override            = default;
 
-  explicit Resource(std::string uri) : uri_(std::move(uri)) {}
+  explicit Resource(std::string uri) : m_uri(std::move(uri)) {}
 
   bool validate() { return validate(Host::Unknown); }
 
@@ -81,9 +46,9 @@ public:
   {
     bool result = false;
 
-    if (!uri_.empty())
+    if (!m_uri.empty())
     {
-      components_ = lex(uri_);
+      m_components = Lexer::lex(m_uri);
 
       switch (host)
       {
@@ -94,6 +59,7 @@ public:
           //       2. parse();
           break;
         case Host::IPv6:
+          // IPv6
           break;
         case Host::RegName:
           result = true;
@@ -108,88 +74,39 @@ public:
     return result;
   }
 
-  void set(const std::string& uri) { uri_ = uri; }
+  void set(const std::string& uri) { m_uri = uri; }
 
-  std::string get(Component c) override
+  std::string get(Component component) override
   {
     std::string result;
 
-    switch (c)
+    switch (component)
     {
       case Component::scheme:
-        result = components_.scheme;
+        result = m_components.scheme;
         break;
       case Component::path:
-        result = components_.path;
+        result = m_components.path;
         break;
       case Component::query:
-        result = components_.query;
+        result = m_components.query;
         break;
       case Component::fragment:
-        result = components_.fragment;
+        result = m_components.fragment;
         break;
       case Component::authority:
-        result = components_.fullAuthority;
+        result = m_components.authority;
         break;
         // get host, username, port
     }
 
     return result;
   }
-};
 
-class IParseStrategy
-{
-public:
-  virtual void parse(std::string&){};
-};
-
-class HostParser : public IParseStrategy
-{
-public:
-  void parse(std::string& string) override {}
-};
-
-class v4IP : public HostParser
-{
-public:
-  void parse(std::string& string) override { HostParser::parse(string); }
-};
-
-class DynamicHostParser
-{
 private:
-  std::ostringstream              oss;
-  std::unique_ptr<IParseStrategy> parseStrategy;
-
-public:
-  void setHostType(const Host& hostType)
-  {
-    switch (hostType)
-    {
-      case Host::Unknown:
-        std::cout << "Unknown\n";
-        break;
-      case Host::IPv4:
-        //        parseStrategy = std::make_unique<IPv4Parser>();
-        std::cout << "IPv4\n";
-        break;
-      case Host::IPv6:
-        std::cout << "IPv6\n";
-        break;
-      case Host::RegName:
-        std::cout << "Registered Name\n";
-        break;
-    }
-  }
-
-  void clear()
-  {
-    oss.str("");
-    oss.clear();
-  }
-
-  std::string str() const { return oss.str(); }
+  std::string                m_uri;
+  std::optional<HostParser*> m_v4;
+  Components                 m_components;
 };
 
-}
+}  // namespace urii
