@@ -1,6 +1,7 @@
-//
-// Created by juan.castellanos on 2/06/21.
-//
+/**
+ * Created by juan.castellanos on 2/06/21.
+*/
+
 #pragma once
 
 #include <string>
@@ -10,6 +11,10 @@ namespace urii
 /**
  * 1. Components
  */
+
+/**
+ * The parts of the authority
+ */
 struct Authority
 {
   std::string host;
@@ -17,6 +22,9 @@ struct Authority
   std::string port;
 };
 
+/**
+ * The parts of the URI
+ */
 struct Components
 {
   std::string scheme;
@@ -27,7 +35,9 @@ struct Components
   Authority   full_authority;
 };
 
-
+/**
+ * The possible authority host types
+ */
 enum class Host : std::uint32_t
 {
   Unknown = 0, /**< 0 */
@@ -36,6 +46,9 @@ enum class Host : std::uint32_t
   RegName = 3  /**< 3 */
 };
 
+/**
+ *
+ */
 enum class Component : std::uint32_t
 {
   scheme    = 0, /**< 0 */

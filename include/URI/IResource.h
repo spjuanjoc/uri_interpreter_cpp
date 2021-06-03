@@ -1,6 +1,7 @@
-//
-// Created by juan.castellanos on 3/10/20.
-//
+/**
+ * Created by juan.castellanos on 3/10/20.
+*/
+
 #pragma once
 
 #include <string>

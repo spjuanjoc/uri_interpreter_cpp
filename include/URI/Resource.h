@@ -1,6 +1,7 @@
-//
-// Created by juan.castellanos on 10/11/20.
-//
+/**
+ * Created by juan.castellanos on 10/11/20.
+*/
+
 #pragma once
 
 #include "Components.h"
@@ -23,7 +24,6 @@ namespace urii
  */
 class HostParser;
 class Lexer;
-//Components lex(const std::string& uri);
 
 /**
  *
@@ -48,8 +48,7 @@ public:
 
     if (!m_uri.empty())
     {
-      Lexer lexer;
-      m_components = lexer.lex(m_uri);
+      m_components = Lexer::lex(m_uri);
 
       switch (host)
       {
