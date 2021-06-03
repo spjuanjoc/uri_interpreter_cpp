@@ -59,6 +59,7 @@ public:
           //       2. parse();
           break;
         case Host::IPv6:
+          // IPv6
           break;
         case Host::RegName:
           result = true;
@@ -75,11 +76,11 @@ public:
 
   void set(const std::string& uri) { m_uri = uri; }
 
-  std::string get(Component c) override
+  std::string get(Component component) override
   {
     std::string result;
 
-    switch (c)
+    switch (component)
     {
       case Component::scheme:
         result = m_components.scheme;
