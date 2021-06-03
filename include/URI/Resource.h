@@ -6,6 +6,7 @@
 #include "Components.h"
 #include "IResource.h"
 #include "Lexer.h"
+
 #include <algorithm>
 #include <iostream>
 #include <iterator>

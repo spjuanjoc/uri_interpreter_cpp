@@ -1,7 +1,8 @@
 #include "URI/Resource.h"
-#include "catch2/catch.hpp"
+
 #include "URI/Parser.h"
 #include "UriExamples.h"
+#include <catch2/catch.hpp>
 
 using namespace urii;
 
@@ -11,7 +12,7 @@ public:
   Resource uri;
 };
 
-TEST_CASE_METHOD(ResourceFixture,"should validate scheme and path ", "[case1]")
+TEST_CASE_METHOD(ResourceFixture, "should validate scheme and path ", "[case1]")
 {
   uri.set(scheme_path_mailto);
 

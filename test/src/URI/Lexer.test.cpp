@@ -1,10 +1,7 @@
-//
-// Created by juan.castellanos on 10/11/20.
-//
-
 #include "URI/Lexer.h"
+
 #include "UriExamples.h"
-#include "catch2/catch.hpp"
+#include <catch2/catch.hpp>
 
 using namespace urii;
 
@@ -30,7 +27,7 @@ TEST_CASE_METHOD(LexerFixture, "should lex scheme and path of type mailto", "[sc
   CHECK(result.path == "John.Doe@example.com");
 }
 
-TEST_CASE_METHOD(LexerFixture,"should lex scheme and path of type tel", "[scheme][path][tel]")
+TEST_CASE_METHOD(LexerFixture, "should lex scheme and path of type tel", "[scheme][path][tel]")
 {
   auto result = lexer.lex(scheme_path_tel);
 
@@ -38,7 +35,7 @@ TEST_CASE_METHOD(LexerFixture,"should lex scheme and path of type tel", "[scheme
   CHECK(result.path == "+1-816-555-1212");
 }
 
-TEST_CASE_METHOD(LexerFixture,"should lex scheme and path of type urn", "[scheme][path][urn]")
+TEST_CASE_METHOD(LexerFixture, "should lex scheme and path of type urn", "[scheme][path][urn]")
 {
   auto result = lexer.lex(scheme_path_urn);
 
