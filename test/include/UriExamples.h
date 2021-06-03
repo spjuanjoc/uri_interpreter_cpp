@@ -1,6 +1,7 @@
-//
-// Created by juan.castellanos on 2/06/21.
-//
+/**
+ * Created by juan.castellanos on 2/06/21.
+*/
+
 #pragma once
 
 
@@ -62,7 +63,18 @@ constexpr auto scheme_authorityIPv6_path_query = "ldap://[2001:db8::7]/c=GB?obje
  *  └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
  *  scheme          authority                  path                 query           fragment
  */
-constexpr auto registeredname_path_query_fragment{
-  "https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
-constexpr auto registeredname_path_query_fragment_2{
-  "https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
+constexpr auto name_path_query_fragment
+  = "https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top";
+constexpr auto name_path_query_fragment_2
+  = "https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top";
+
+/**
+ *
+ *            registered name
+ *          ┌───────┴──────────┐
+ *  https://spjuanjoc.github.io/avanzado/fechas-formato-estandar/#usando-la-biblioteca-fmt
+ *  └─┬─┘   └────────┬─────────┘└────────────┬──────────────────┘└───────────┬───────────┘
+ *  scheme       authority                  path                           fragment
+ */
+constexpr auto name_path_fragment
+  = "https://spjuanjoc.github.io/avanzado/fechas-formato-estandar/#usando-la-biblioteca-fmt";
