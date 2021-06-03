@@ -1,15 +1,17 @@
-//
-// Created by juan.castellanos on 10/11/20.
-//
+/**
+ * Created by juan.castellanos on 10/11/20.
+*/
 #pragma once
 
 #include "Components.h"
+#include "ILexer.h"
 
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace urii
@@ -17,10 +19,22 @@ namespace urii
 /**
  * 4. Usage - lex
  */
-class Lexer
+class Lexer : virtual public ILexer
 {
 public:
   Lexer() = default;
+
+  explicit Lexer(std::string_view uri) : m_uri(uri) {}
+
+  virtual ~Lexer()    = default;
+  Lexer(const Lexer&) = default;
+  Lexer(Lexer&&)      = default;
+  Lexer& operator=(const Lexer&) = default;
+  Lexer& operator=(Lexer&&) = default;
+
+  Components lex() override { return lex(m_uri); }
+
+  void setUri(std::string_view uri) override { m_uri = uri; }
 
   /**
    * Performs the tokenization of a resource with '/' as separator
@@ -28,7 +42,7 @@ public:
    * @param uri The resource.
    * @return The tokens into a Components struct.
    */
-  Components lex(const std::string& uri)
+  static Components lex(const std::string& uri)
   {
     Components  result;
     std::string space_separated_uri{uri};
@@ -44,20 +58,22 @@ public:
 
     switch (components.size())
     {
+      case 0:
+        break;
       case 1:
-        std::cout << "case 1: scheme + path \n";
+        //        std::cout << "case 1: scheme + path \n";
         result = case1(components.at(0));
         break;
       case 2:
-        std::cout << "case 2: scheme + authority\n";
+        //        std::cout << "case 2: scheme + authority\n";
         result = case2(components);
         break;
       case 3:
-        std::cout << "case 3: single path\n";
+        //        std::cout << "case 3: single path\n";
         result = case3(components);
         break;
       default:
-        std::cout << "case 4+: multi path\n";
+        //        std::cout << "case 4+: multi path\n";
         result = case4(components);
         break;
     }
@@ -65,13 +81,13 @@ public:
     return result;
   }
 
-private:
+protected:
   /**
    * Processes the case when URI contains only scheme and path, it does not contain //
    * @param scheme_and_path
    * @return
    */
-  Components case1(const std::string& scheme_and_path)
+  static Components case1(const std::string& scheme_and_path)
   {
     Components result{};
 
@@ -83,8 +99,6 @@ private:
       result.path   = scheme_and_path.substr(pos + 1);
     }
 
-    // now they can be parsed
-    std::cout << "lex completed\n";
     return result;
   }
 
@@ -95,7 +109,7 @@ private:
    * @param uri
    * @return
    */
-  Components case2(const std::vector<std::string>& uri)
+  static Components case2(const std::vector<std::string>& uri)
   {
     Components result{};
     result.scheme    = uri.at(0);
@@ -105,11 +119,6 @@ private:
                                        std::end(result.scheme),
                                        [](char c) { return c == ':'; }),
                         std::end(result.scheme));
-
-    // now they can be parsed
-    std::cout << "Scheme: " << result.scheme << '\n';
-    std::cout << "Authority: " << result.authority << '\n';
-    std::cout << "lex completed\n";
 
     return result;
   }
@@ -123,7 +132,7 @@ private:
    * @param uri
    * @return
    */
-  Components case3(const std::vector<std::string>& uri)
+  static Components case3(const std::vector<std::string>& uri)
   {
     Components result{};
 
@@ -136,11 +145,11 @@ private:
                                        [](char c) { return c == ':'; }),
                         std::end(result.scheme));
 
-    // now they can be parsed
-    std::cout << "Scheme: " << result.scheme << '\n';
-    std::cout << "Authority: " << result.authority << '\n';
-    std::cout << "Path+: " << result.path << '\n';
-    std::cout << "lex completed\n";
+    const auto [path, query, fragment] = separatePath(result.path);
+
+    result.path     = path;
+    result.query    = query;
+    result.fragment = fragment;
 
     return result;
   }
@@ -158,11 +167,10 @@ private:
    * @param uri
    * @return
    */
-  Components case4(const std::vector<std::string>& uri)
+  static Components case4(const std::vector<std::string>& uri)
   {
     Components result;
 
-    // TODO validate vector size
     result.scheme    = uri.at(0);
     result.authority = uri.at(1);
     result.path      = rejoinPath({std::begin(uri) + 2, std::end(uri)});
@@ -172,17 +180,16 @@ private:
                                        [](char c) { return c == ':'; }),
                         std::end(result.scheme));
 
-    // now they can be parsed
-    std::cout << "Scheme: " << result.scheme << '\n';
-    std::cout << "Authority: " << result.authority << '\n';
-    std::cout << "Path+: " << result.path << '\n';
-    // TODO separate query and fragment from path
-    std::cout << "lex completed\n";
+    const auto [path, query, fragment] = separatePath(result.path);
+
+    result.path     = path;
+    result.query    = query;
+    result.fragment = fragment;
 
     return result;
   }
 
-  std::string rejoinPath(std::vector<std::string>&& uri)
+  static std::string rejoinPath(std::vector<std::string>&& uri)
   {
     std::string result;
 
@@ -194,6 +201,43 @@ private:
 
     return result;
   }
+
+  static std::tuple<std::string, std::string, std::string> separatePath(const std::string& path_to_end)
+  {
+    std::string path_only{path_to_end};
+    std::string query;
+    std::string fragment;
+
+    const auto query_position = path_to_end.find('?');
+
+    if (query_position != std::string::npos)
+    {
+      path_only                    = path_to_end.substr(0, query_position);
+      query                        = path_to_end.substr(query_position + 1);
+      const auto fragment_position = query.find('#');
+
+      if (fragment_position != std::string::npos)
+      {
+        fragment = query.substr(fragment_position + 1);
+        query    = query.substr(0, fragment_position);
+      }
+    }
+    else
+    {
+      const auto fragment_position = path_to_end.find('#');
+
+      if (fragment_position != std::string::npos)
+      {
+        path_only = path_to_end.substr(0, fragment_position);
+        fragment  = path_to_end.substr(fragment_position + 1);
+      }
+    }
+
+    return {path_only, query, fragment};
+  }
+
+private:
+  std::string m_uri;
 };
 
 }  // namespace urii
