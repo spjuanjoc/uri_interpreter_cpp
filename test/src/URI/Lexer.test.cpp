@@ -1,6 +1,7 @@
 #include "URI/Lexer.h"
 
 #include "UriExamples.h"
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 #include <catch2/catch.hpp>
 
 using namespace urii;
@@ -84,4 +85,13 @@ TEST_CASE_METHOD(LexerFixture, "should lex path, query, and fragment", "[RN][pat
   CHECK(result.scheme == "https");
   CHECK(result.authority == "john.doe@example.com:123");
   CHECK(result.path == "/forum/questions/?tag=networking&order=newest#top");
+}
+
+TEST_CASE("should benchmark the lexer", "[lex][benchmark]")
+{
+  BENCHMARK("lexer construction and lex")
+  {
+    Lexer lexer;
+    lexer.lex(registeredname_path_query_fragment);
+  };
 }
