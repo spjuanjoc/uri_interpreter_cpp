@@ -233,7 +233,7 @@ void UriHandler::parsePort(const std::string& port, const unsigned& position)
   m_full_authority.m_port = port.substr(position);
   m_full_authority.m_port.erase(std::remove_if(m_full_authority.m_port.begin(),
                                                m_full_authority.m_port.end(),
-                                               [](unsigned char c) { return !isdigit(c); }),
+                                               [](unsigned char c) { return isdigit(c) == 0; }),
                                 m_full_authority.m_port.end());
   auto uPort = std::stoi(m_full_authority.m_port);
 
