@@ -161,9 +161,10 @@ private:
   {
     Components result;
 
+    // TODO validate vector size
     result.scheme    = uri.at(0);
     result.authority = uri.at(1);
-    result.path      = rejoin({std::begin(uri) + 2, std::end(uri)});
+    result.path      = rejoinPath({std::begin(uri) + 2, std::end(uri)});
 
     result.scheme.erase(std::remove_if(std::begin(result.scheme),
                                        std::end(result.scheme),
@@ -174,12 +175,13 @@ private:
     std::cout << "Scheme: " << result.scheme << '\n';
     std::cout << "Authority: " << result.authority << '\n';
     std::cout << "Path+: " << result.path << '\n';
+    // TODO separate query and fragment from path
     std::cout << "lex completed\n";
 
     return result;
   }
 
-  std::string rejoin(std::vector<std::string>&& uri)
+  std::string rejoinPath(std::vector<std::string>&& uri)
   {
     std::string result;
 
