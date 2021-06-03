@@ -42,8 +42,8 @@ constexpr auto scheme_path_news = "news:comp.infosystems.www.servers.unix";
  * └─┬──┘   └─────┬─────┘│
  * scheme     authority  path
 */
-constexpr auto uri3SchemeAuthV4     = "telnet://192.0.2.16:80/";
-constexpr auto uri3SchemeAuthV4Path = "telnet://192.0.2.16:80/path";
+constexpr auto scheme_authorityIPv4 = "telnet://192.0.2.16:80/";
+constexpr auto scheme_authorityIPv4_path = "telnet://192.0.2.17:80/path";
 
 /**
  *
@@ -51,9 +51,10 @@ constexpr auto uri3SchemeAuthV4Path = "telnet://192.0.2.16:80/path";
  * └┬─┘   └─────┬─────┘└─┬─┘ └──────┬──────┘
  * scheme   authority   path      query
 */
-constexpr auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClass?one";
+constexpr auto scheme_authorityIPv6_path_query = "ldap://[2001:db8::7]/c=GB?objectClass?one";
 
 /**
+ *
  *
  *           userinfo       host      port
  *          ┌──┴───┐ ┌──────┴──────┐ ┌┴┐
@@ -61,7 +62,7 @@ constexpr auto uri4SchemeAuthV6PathQuery = "ldap://[2001:db8::7]/c=GB?objectClas
  *  └─┬─┘   └───────────┬──────────────┘└───────┬───────┘ └───────────┬─────────────┘ └┬┘
  *  scheme          authority                  path                 query           fragment
  */
-constexpr auto uri5SchemeAuthRNPathQueryFrag{
+constexpr auto registeredname_path_query_fragment{
   "https://john.doe@example.com:123/forum/questions/?tag=networking&order=newest#top"};
-constexpr auto uri5SchemeAuthRNPathQueryFrag2{
+constexpr auto registeredname_path_query_fragment_2{
   "https://sitechecker.pro:8080/knowledge-base/path?name=article&topic=seo#top"};
