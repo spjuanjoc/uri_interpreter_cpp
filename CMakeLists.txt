@@ -4,11 +4,8 @@ project(urii VERSION 0.0.3 LANGUAGES CXX)
 
 
 # Options
-option(ENABLE_PCH "Enable Precompiled Headers" False)
+option(ENABLE_PCH   "Enable Precompiled Headers" False)
 option(ENABLE_TESTS "Enable tests" False)
-option(ENABLE_COVERAGE "Enable gcov coverage" False)
-option(ENABLE_WARN_AS_ERR "Treat compiler warnings as errors" False)
-
 
 # Sources
 set(SOURCES
