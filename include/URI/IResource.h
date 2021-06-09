@@ -1,8 +1,12 @@
 /**
- * Created by juan.castellanos on 3/10/20.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2020-10-03
+ */
 
-#pragma once
+#ifndef URII_IRESOURCE_H
+#define URII_IRESOURCE_H
 
 #include <string>
 
@@ -34,3 +38,5 @@ public:
 };
 
 }  // namespace urii
+
+#endif /* URII_IRESOURCE_H */

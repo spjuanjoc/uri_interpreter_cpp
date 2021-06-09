@@ -1,8 +1,12 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
 
-#pragma once
+#ifndef URII_ILEXER_H
+#define URII_ILEXER_H
 
 #include <string_view>
 
@@ -14,7 +18,7 @@ class ILexer
 {
 public:
   ILexer()              = default;
-  ~ILexer()             = default;
+  virtual ~ILexer()     = default;
   ILexer(const ILexer&) = default;
   ILexer(ILexer&&)      = default;
   ILexer& operator=(const ILexer&) = default;
@@ -26,3 +30,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_ILEXER_H */

@@ -1,8 +1,13 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
 
 #pragma once
+#ifndef URII_RESOURCE_H
+#define URII_RESOURCE_H
 
 #include "Components.h"
 #include "IResource.h"
@@ -110,3 +115,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_RESOURCE_H */

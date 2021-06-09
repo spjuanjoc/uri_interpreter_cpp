@@ -1,7 +1,12 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
-#pragma once
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
+
+#ifndef URII_LEXER_H
+#define URII_LEXER_H
 
 #include "Components.h"
 #include "ILexer.h"
@@ -26,7 +31,7 @@ public:
 
   explicit Lexer(std::string_view uri) : m_uri(uri) {}
 
-  virtual ~Lexer()    = default;
+  ~Lexer() override   = default;
   Lexer(const Lexer&) = default;
   Lexer(Lexer&&)      = default;
   Lexer& operator=(const Lexer&) = default;
@@ -241,3 +246,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_LEXER_H*/

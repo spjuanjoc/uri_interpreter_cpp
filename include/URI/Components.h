@@ -1,8 +1,12 @@
 /**
- * Created by juan.castellanos on 2/06/21.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2021-06-02
+ */
 
-#pragma once
+#ifndef URII_COMPONENTS_H
+#define URII_COMPONENTS_H
 
 #include <string>
 
@@ -59,3 +63,5 @@ enum class Component : std::uint32_t
 };
 
 }  // namespace urii
+
+#endif /* URII_COMPONENTS_H */

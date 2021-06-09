@@ -1,5 +1,8 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
 
 #include "URI/Lexer.h"

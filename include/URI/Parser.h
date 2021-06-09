@@ -1,8 +1,14 @@
 /**
- * Created by juan.castellanos on 2/06/21.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2021-06-02
+ */
 
-#pragma once
+#ifndef URII_PARSER_H
+#define URII_PARSER_H
+
+#include <cstdio>
 
 namespace urii
 {
@@ -12,7 +18,8 @@ namespace urii
 class IParseStrategy
 {
 public:
-  virtual void parse(std::string& uri) = 0;
+  virtual void parse(const std::string& uri) = 0;
+  virtual ~IParseStrategy() = default;
 };
 
 /**
@@ -21,7 +28,7 @@ public:
 class HostParser : public IParseStrategy
 {
 public:
-  void parse(std::string& string) override {}
+  void parse(const std::string& uri) override { puts(uri.c_str()); }
 };
 
 /**
@@ -30,7 +37,7 @@ public:
 class v4IP : public HostParser
 {
 public:
-  void parse(std::string& string) override { HostParser::parse(string); }
+  void parse(const std::string& uri) override { HostParser::parse(uri); }
 };
 
 /**
@@ -73,3 +80,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_PARSER_H*/

@@ -1,9 +1,12 @@
 /**
- * Created by juan.castellanos on 2/06/21.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2021-06-02
+ */
 
-#pragma once
-
+#ifndef TEST_URIEXAMPLES_H
+#define TEST_URIEXAMPLES_H
 
 /**
  *
@@ -78,3 +81,5 @@ constexpr auto name_path_query_fragment_2
  */
 constexpr auto name_path_fragment
   = "https://spjuanjoc.github.io/avanzado/fechas-formato-estandar/#usando-la-biblioteca-fmt";
+
+#endif /* TEST_URIEXAMPLES_H */
