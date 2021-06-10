@@ -1,9 +1,11 @@
 /**
- * @brief
+ * @brief Declaration of the interface that stores a URI.
  *
  * @author  juan.castellanos
  * @date    2020-10-03
  */
+
+/* 2. Interface */
 
 #ifndef URII_IRESOURCE_H
 #define URII_IRESOURCE_H
@@ -12,22 +14,22 @@
 
 namespace urii
 {
-/**
- * 1. Components
- */
+// Forward declarations
 struct Authority;
 struct Components;
 enum class Host : std::uint32_t;
 enum class Component : std::uint32_t;
 
 /**
- * 2. Interface
+ * @brief Interface that represents the methods for processing a URI.
  */
-class IResource
+class IResource  // TODO maybe rename to IInterpreter
 {
 public:
-  IResource()                 = default;
-  virtual ~IResource()        = default;
+  IResource()          = default;
+  virtual ~IResource() = default;
+
+  // Rule of five for special members.
   IResource(const IResource&) = default;
   IResource(IResource&&)      = default;
   IResource& operator=(const IResource&) = default;

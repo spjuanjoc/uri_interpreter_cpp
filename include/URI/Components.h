@@ -1,9 +1,11 @@
 /**
- * @brief
+ * @brief Declaration of the components that make up a Uniform Resource Identifier.
  *
  * @author  juan.castellanos
  * @date    2021-06-02
  */
+
+/* 1. Components */
 
 #ifndef URII_COMPONENTS_H
 #define URII_COMPONENTS_H
@@ -12,12 +14,9 @@
 
 namespace urii
 {
-/**
- * 1. Components
- */
 
 /**
- * The parts of the authority
+ * @brief Represents the parts of the authority.
  */
 struct Authority
 {
@@ -27,7 +26,7 @@ struct Authority
 };
 
 /**
- * The parts of the URI
+ * @brief Represents the parts of the URI.
  */
 struct Components
 {
@@ -40,7 +39,7 @@ struct Components
 };
 
 /**
- * The possible authority host types
+ * @brief Represents the possible authority host types.
  */
 enum class Host : std::uint32_t
 {
@@ -51,7 +50,7 @@ enum class Host : std::uint32_t
 };
 
 /**
- *
+ * @brief Represents the possible parts of the URI.
  */
 enum class Component : std::uint32_t
 {
