@@ -1,8 +1,14 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
+ * @brief Declaration of the class that analyses grammatically the URI components.
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
 
-#pragma once
+/* 3. Implementation */
+
+#ifndef URII_RESOURCE_H
+#define URII_RESOURCE_H
 
 #include "Components.h"
 #include "IResource.h"
@@ -19,29 +25,85 @@
 
 namespace urii
 {
-/**
- * 3. Implementation
- */
+// Forward declarations
 class HostParser;
 class Lexer;
 
 /**
  *
  */
-class Resource : public IResource
+class Resource : virtual public IResource
 {
 public:
-  Resource()                = default;
-  Resource(const Resource&) = default;
-  Resource& operator=(const Resource&) = default;
-  Resource(Resource&&)                 = default;
-  Resource& operator=(Resource&&) = default;
-  ~Resource() override            = default;
+  Resource()           = default;
+  ~Resource() override = default;
 
+  // Rule of five for special members.
+  Resource(const Resource&) = default;
+  Resource(Resource&&)      = default;
+  Resource& operator=(const Resource&) = default;
+  Resource& operator=(Resource&&) = default;
+
+  /**
+   * Constructs the resource with a string URI.
+   *
+   * @param uri The Uniform Resource Information.
+   */
   explicit Resource(std::string uri) : m_uri(std::move(uri)) {}
 
+  /**
+   * Assigns the URI.
+   *
+   * @param uri The Uniform Resource Information.
+   */
+  void set(const std::string& uri) { m_uri = uri; }
+
+  /**
+   * Retrieves a single component.
+   *
+   * @param component The name of the component to retrieve.
+   * @return The resource component.
+   */
+  std::string get(Component component) override
+  {
+    std::string result;
+
+    switch (component)
+    {
+      case Component::scheme:
+        result = m_components.scheme;
+        break;
+      case Component::path:
+        result = m_components.path;
+        break;
+      case Component::query:
+        result = m_components.query;
+        break;
+      case Component::fragment:
+        result = m_components.fragment;
+        break;
+      case Component::authority:
+        result = m_components.authority;
+        break;
+        // get host, username, port
+    }
+
+    return result;
+  }
+
+  /**
+   * Delegates an empty validation try.
+   *
+   * @return
+   */
   bool validate() { return validate(Host::Unknown); }
 
+  /**
+   * Lexes and parses a host.
+   *
+   * @param host The type of host to validate
+   * @return
+   */
   bool validate(Host host) override
   {
     bool result = false;
@@ -74,35 +136,6 @@ public:
     return result;
   }
 
-  void set(const std::string& uri) { m_uri = uri; }
-
-  std::string get(Component component) override
-  {
-    std::string result;
-
-    switch (component)
-    {
-      case Component::scheme:
-        result = m_components.scheme;
-        break;
-      case Component::path:
-        result = m_components.path;
-        break;
-      case Component::query:
-        result = m_components.query;
-        break;
-      case Component::fragment:
-        result = m_components.fragment;
-        break;
-      case Component::authority:
-        result = m_components.authority;
-        break;
-        // get host, username, port
-    }
-
-    return result;
-  }
-
 private:
   std::string                m_uri;
   std::optional<HostParser*> m_v4;
@@ -110,3 +143,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_RESOURCE_H */

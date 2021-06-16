@@ -1,16 +1,16 @@
 # URI interpreter C++
 
 |CI|Platform|Compiler|Build Status|
-|---|---|---|---|
+|---|---|---|:---:|
 |Github Actions | Linux Ubuntu  | gcc     | [![linux](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml)   |
 |Github Actions | MacOS         | clang   | [![macos](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml) |
 |AppVeyor       | Windows       | MSVC    | ??|
 
-URI stands for Unified Resource Identifier.
+URI stands for Uniform Resource Identifier.
 
-This interpreter is used to lex and parse URIs in order to
-identify its components, specially to distinguish whether the host is 
-IPv4, IPv6, or Registered Name.
+This interpreter is used to perform lexical and grammatical analysis
+(lex and parse) for URIs in order to identify its components, specially to
+distinguish whether the host is IPv4, IPv6, or Registered Name.
 
 ---
 URI components:
@@ -54,4 +54,4 @@ See the Wiki for [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
 * CMake > 3.1
 * gcc-7 c++17
 * conan
-* googletest
+* Catch2

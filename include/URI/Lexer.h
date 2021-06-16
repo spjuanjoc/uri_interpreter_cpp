@@ -1,7 +1,15 @@
 /**
- * Created by juan.castellanos on 10/11/20.
-*/
-#pragma once
+ * @brief Declaration of the class that performs lexical analysis,
+ *        dividing a given string into components separated by a token.
+ *
+ * @author  juan.castellanos
+ * @date    2020-11-10
+ */
+
+/* 4.1. Usage: Lexer */
+
+#ifndef URII_LEXER_H
+#define URII_LEXER_H
 
 #include "Components.h"
 #include "ILexer.h"
@@ -17,7 +25,7 @@
 namespace urii
 {
 /**
- * 4. Usage - lex
+ * @brief Implementation of the URI lexer.
  */
 class Lexer : virtual public ILexer
 {
@@ -26,21 +34,33 @@ public:
 
   explicit Lexer(std::string_view uri) : m_uri(uri) {}
 
-  virtual ~Lexer()    = default;
+  ~Lexer() override = default;
+
+  // Rule of five for special members.
   Lexer(const Lexer&) = default;
   Lexer(Lexer&&)      = default;
   Lexer& operator=(const Lexer&) = default;
   Lexer& operator=(Lexer&&) = default;
 
+  /**
+   * Delegates the tokenization of an already set URI.
+   *
+   * @return The tokenized URI into a Components struct.
+   */
   Components lex() override { return lex(m_uri); }
 
+  /**
+   * Assigns the URI.
+   *
+   * @param uri
+   */
   void setUri(std::string_view uri) override { m_uri = uri; }
 
   /**
    * Performs the tokenization of a resource with '/' as separator
    *
    * @param uri The resource.
-   * @return The tokens into a Components struct.
+   * @return The tokenized URI into a Components struct.
    */
   static Components lex(const std::string& uri)
   {
@@ -84,6 +104,7 @@ public:
 protected:
   /**
    * Processes the case when URI contains only scheme and path, it does not contain //
+   *
    * @param scheme_and_path
    * @return
    */
@@ -104,8 +125,9 @@ protected:
 
   /**
    * Processes the case when URI contains at least scheme and authority
-   * scheme .at(0)
-   * authority .at(1)
+   *  scheme .at(0)
+   *  authority .at(1)
+   *
    * @param uri
    * @return
    */
@@ -125,10 +147,10 @@ protected:
 
   /**
    * Process the case when URI contains scheme + authority, and at least path with a single level
+   *  scheme .at(0)
+   *  authority .at(1)
+   *  path?query#fragment .at(2) where path does not have more than one /
    *
-   * scheme .at(0)
-   * authority .at(1)
-   * path?query#fragment .at(2) where path does not have more than one /
    * @param uri
    * @return
    */
@@ -156,13 +178,11 @@ protected:
 
   /**
    * Processes the case when URI contains scheme + authority, and at least path with a multi level
-   *
-   * more than 3 means it has/multi/path/
-   * take first 2, and join from 3+
-   *
-   * scheme .at(0)
-   * authority .at(1)
-   * path?query#fragment .at(2)
+   *  more than 3 means it has/multi/path/
+   *  take first 2, and join from 3+
+   *  scheme .at(0)
+   *  authority .at(1)
+   *  path?query#fragment .at(2)
    *
    * @param uri
    * @return
@@ -189,11 +209,17 @@ protected:
     return result;
   }
 
-  static std::string rejoinPath(std::vector<std::string>&& uri)
+  /**
+   * Merges components of multiple level path.
+   *
+   * @param multi_path The space separated path with multiple levels.
+   * @return The merged multi path
+   */
+  static std::string rejoinPath(std::vector<std::string>&& multi_path)
   {
     std::string result;
 
-    for (const auto& it : uri)
+    for (const auto& it : multi_path)
     {
       result.append("/");
       result.append(it);
@@ -202,6 +228,12 @@ protected:
     return result;
   }
 
+  /**
+   * Divides query and fragment from path.
+   *
+   * @param path_to_end The URI components from path onwards.
+   * @return The query, fragment, and path.
+   */
   static std::tuple<std::string, std::string, std::string> separatePath(const std::string& path_to_end)
   {
     std::string path_only{path_to_end};
@@ -241,3 +273,5 @@ private:
 };
 
 }  // namespace urii
+
+#endif /* URII_LEXER_H*/

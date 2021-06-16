@@ -1,6 +1,9 @@
 /**
- * Created by juan.castellanos on 2/06/21.
-*/
+ * @brief
+ *
+ * @author  juan.castellanos
+ * @date    2021-06-02
+ */
 
 #include "URI/Resource.h"
 
