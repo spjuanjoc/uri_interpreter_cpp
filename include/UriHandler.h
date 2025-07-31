@@ -1,7 +1,7 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
-
 
 /**
 Plan:
@@ -51,14 +51,14 @@ Plan:
 // interface
 
 // implementation
-//uri validator strategies
+// uri validator strategies
 // st1 IPv4
 // st2 IPv6
 // st2 RegName
 
 // usage
 
-namespace urii
+namespace uin
 {
 
 /**
@@ -124,8 +124,8 @@ private:
   void               parsePath();
 
 
-  bool m_has_port{false};
-  bool m_is_valid_uri{false};
+  bool m_has_port { false };
+  bool m_is_valid_uri { false };
 
   std::string m_uri;
   std::string m_scheme;
@@ -141,7 +141,7 @@ private:
     std::string m_port;
   } m_full_authority;
 
-  HostType m_host_type{HostType::Unknown};
+  HostType m_host_type { HostType::Unknown };
 };
 
-}  // namespace urii
+}  // namespace uin

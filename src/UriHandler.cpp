@@ -1,7 +1,7 @@
 #include "UriHandler.h"
+
 #include <algorithm>
 #include <cctype>
-#include <iostream>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -13,30 +13,37 @@ using std::vector;
 constexpr auto MIN_PORT = 0;
 constexpr auto MAX_PORT = 65535;
 
-namespace urii
+namespace uin
 {
-UriHandler::UriHandler(std::string uri) : m_uri{std::move(uri)}
+UriHandler::UriHandler(std::string uri)
+: m_uri { std::move(uri) }
 {
   parseUri(m_uri);
 }
 
-bool UriHandler::hasPort() const
+bool
+UriHandler::hasPort() const
 {
   return m_has_port;
 }
 
-bool UriHandler::isValidUri() const
+bool
+UriHandler::isValidUri() const
 {
   return m_is_valid_uri;
 }
 
-bool UriHandler::isValidIPv4(const std::string& host)
+bool
+UriHandler::isValidIPv4(const std::string& host)
 {
-  std::string sIP{host};
+  std::string sIP { host };
   std::replace_if(
     sIP.begin(),
     sIP.end(),
-    [](const char c) { return c == '.'; },
+    [](const char c)
+    {
+      return c == '.';
+    },
     ' ');
   std::stringstream ss;
   ss << sIP;
@@ -53,7 +60,8 @@ bool UriHandler::isValidIPv4(const std::string& host)
   return allDigits;
 }
 
-bool UriHandler::isValidHextet(const std::string& hextet)
+bool
+UriHandler::isValidHextet(const std::string& hextet)
 {
   std::stringstream ss;
   int               outHex = 0x0;
@@ -65,16 +73,20 @@ bool UriHandler::isValidHextet(const std::string& hextet)
   return (ss.str() == hextet);
 }
 
-bool UriHandler::isValidIPv6(const std::string& host)
+bool
+UriHandler::isValidIPv6(const std::string& host)
 {
   const uint32_t MAX_NUM_OF_HEXETS = 8;
   bool           valid             = true;
   std::string    result            = cropIPv6(host);
-  std::string    section{result};
+  std::string    section { result };
   std::replace_if(
     section.begin(),
     section.end(),
-    [](char c) { return c == ':'; },
+    [](char c)
+    {
+      return c == ':';
+    },
     ' ');
   std::stringstream ss;
   ss << section;
@@ -96,14 +108,16 @@ bool UriHandler::isValidIPv6(const std::string& host)
   return valid;
 }
 
-bool UriHandler::isValidRegName(const std::string& host)
+bool
+UriHandler::isValidRegName(const std::string& host)
 {
   return true;  /// \todo implement
 }
 
-std::string UriHandler::cropIPv6(const std::string& ip)
+std::string
+UriHandler::cropIPv6(const std::string& ip)
 {
-  std::string result{ip};
+  std::string result { ip };
   auto        pos1 = result.find(']');
 
   if (pos1 != std::string::npos)
@@ -111,8 +125,15 @@ std::string UriHandler::cropIPv6(const std::string& ip)
     result = result.substr(0, pos1 + 1);
   }
 
-  result.erase(std::remove_if(result.begin(), result.end(), [](char c) { return (c == '[' || c == ']'); }),
-               result.end());
+  result.erase(
+    std::remove_if(
+      result.begin(),
+      result.end(),
+      [](char c)
+      {
+        return (c == '[' || c == ']');
+      }),
+    result.end());
   auto pos = result.find('%');
 
   if (pos != std::string::npos)
@@ -123,47 +144,56 @@ std::string UriHandler::cropIPv6(const std::string& ip)
   return result;
 }
 
-std::string UriHandler::getAuthority() const
+std::string
+UriHandler::getAuthority() const
 {
   return m_authority;
 }
 
-std::string UriHandler::getFragment() const
+std::string
+UriHandler::getFragment() const
 {
   return m_fragment;
 }
 
-std::string UriHandler::getHost() const
+std::string
+UriHandler::getHost() const
 {
   return m_full_authority.m_host;
 }
 
-std::string UriHandler::getPath() const
+std::string
+UriHandler::getPath() const
 {
   return m_path;
 }
 
-std::string UriHandler::getPort() const
+std::string
+UriHandler::getPort() const
 {
   return m_full_authority.m_port;
 }
 
-std::string UriHandler::getQuery() const
+std::string
+UriHandler::getQuery() const
 {
   return m_query;
 }
 
-std::string UriHandler::getScheme() const
+std::string
+UriHandler::getScheme() const
 {
   return m_scheme;
 }
 
-std::string UriHandler::getUserInfo() const
+std::string
+UriHandler::getUserInfo() const
 {
   return m_full_authority.m_user_info;
 }
 
-void UriHandler::parseAuthority(const std::string& authority)
+void
+UriHandler::parseAuthority(const std::string& authority)
 {
   const auto& itIpVersion = authority.find(']');
   if (itIpVersion != std::string::npos)
@@ -201,7 +231,7 @@ void UriHandler::parseAuthority(const std::string& authority)
       {
         m_is_valid_uri = false;
         return;
-        //ipv6 with no []
+        // ipv6 with no []
       }
       m_has_port = true;
       host       = host.substr(0, itPort);
@@ -228,13 +258,19 @@ void UriHandler::parseAuthority(const std::string& authority)
   parseUserInfo();
 }
 
-void UriHandler::parsePort(const std::string& port, const unsigned& position)
+void
+UriHandler::parsePort(const std::string& port, const unsigned& position)
 {
   m_full_authority.m_port = port.substr(position);
-  m_full_authority.m_port.erase(std::remove_if(m_full_authority.m_port.begin(),
-                                               m_full_authority.m_port.end(),
-                                               [](unsigned char c) { return isdigit(c) == 0; }),
-                                m_full_authority.m_port.end());
+  m_full_authority.m_port.erase(
+    std::remove_if(
+      m_full_authority.m_port.begin(),
+      m_full_authority.m_port.end(),
+      [](unsigned char c)
+      {
+        return isdigit(c) == 0;
+      }),
+    m_full_authority.m_port.end());
   auto uPort = std::stoi(m_full_authority.m_port);
 
   // port range: 0 to 65535
@@ -245,7 +281,8 @@ void UriHandler::parsePort(const std::string& port, const unsigned& position)
   }
 }
 
-void UriHandler::parseUserInfo()
+void
+UriHandler::parseUserInfo()
 {
   auto it = m_full_authority.m_host.find('@');
   if (it != std::string::npos)
@@ -255,13 +292,17 @@ void UriHandler::parseUserInfo()
   }
 }
 
-void UriHandler::parseUri(const std::string& uri)
+void
+UriHandler::parseUri(const std::string& uri)
 {
-  std::string sUri{uri};
+  std::string sUri { uri };
   std::replace_if(
     sUri.begin(),
     sUri.end(),
-    [](const char c) { return c == '/'; },
+    [](const char c)
+    {
+      return c == '/';
+    },
     ' ');
   std::stringstream ss;
   ss << sUri;
@@ -276,8 +317,15 @@ void UriHandler::parseUri(const std::string& uri)
   if (vecSize >= 2)
   {
     m_scheme = uriVec.at(0);
-    m_scheme.erase(std::remove_if(m_scheme.begin(), m_scheme.end(), [](unsigned char c) { return !isalpha(c); }),
-                   m_scheme.end());
+    m_scheme.erase(
+      std::remove_if(
+        m_scheme.begin(),
+        m_scheme.end(),
+        [](unsigned char c)
+        {
+          return !isalpha(c);
+        }),
+      m_scheme.end());
     m_authority = uriVec.at(1);
     parseAuthority(m_authority);
   }
@@ -299,7 +347,8 @@ void UriHandler::parseUri(const std::string& uri)
   }
 }
 
-void UriHandler::parsePath()
+void
+UriHandler::parsePath()
 {
   std::string tmp = m_path;
   auto        it  = tmp.find('#');
@@ -316,4 +365,4 @@ void UriHandler::parsePath()
   }
 }
 
-}  // namespace urii
+}  // namespace uin

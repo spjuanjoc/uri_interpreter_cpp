@@ -2,27 +2,26 @@
  * @brief Declaration of the class that performs lexical analysis,
  *        dividing a given string into components separated by a token.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2020-11-10
  */
 
 /* 4.1. Usage: Lexer */
 
-#ifndef URII_LEXER_H
-#define URII_LEXER_H
+#ifndef UIN_LEXER_H
+#define UIN_LEXER_H
 
-#include "Components.h"
-#include "ILexer.h"
+#include "Components.hpp"
+#include "ILexer.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
 
-namespace urii
+namespace uin
 {
 /**
  * @brief Implementation of the URI lexer.
@@ -32,15 +31,17 @@ class Lexer : virtual public ILexer
 public:
   Lexer() = default;
 
-  explicit Lexer(std::string_view uri) : m_uri(uri) {}
+  explicit Lexer(std::string_view uri)
+  : m_uri(uri)
+  {
+  }
 
   ~Lexer() override = default;
 
-  // Rule of five for special members.
-  Lexer(const Lexer&) = default;
-  Lexer(Lexer&&)      = default;
+  Lexer(const Lexer&)            = default;
+  Lexer(Lexer&&)                 = default;
   Lexer& operator=(const Lexer&) = default;
-  Lexer& operator=(Lexer&&) = default;
+  Lexer& operator=(Lexer&&)      = default;
 
   /**
    * Delegates the tokenization of an already set URI.
@@ -65,16 +66,20 @@ public:
   static Components lex(const std::string& uri)
   {
     Components  result;
-    std::string space_separated_uri{uri};
+    std::string space_separated_uri { uri };
 
     std::replace_if(
       std::begin(space_separated_uri),
       std::end(space_separated_uri),
-      [](const char c) { return c == '/'; },
+      [](const char c)
+      {
+        return c == '/';
+      },
       ' ');
 
-    std::istringstream       iss{space_separated_uri};
-    std::vector<std::string> components{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+    std::istringstream       iss { space_separated_uri };
+    std::vector<std::string> components { std::istream_iterator<std::string> { iss },
+                                          std::istream_iterator<std::string> {} };
 
     switch (components.size())
     {
@@ -110,7 +115,7 @@ protected:
    */
   static Components case1(const std::string& scheme_and_path)
   {
-    Components result{};
+    Components result {};
 
     const auto pos = scheme_and_path.find(':');
 
@@ -133,14 +138,19 @@ protected:
    */
   static Components case2(const std::vector<std::string>& uri)
   {
-    Components result{};
+    Components result {};
     result.scheme    = uri.at(0);
     result.authority = uri.at(1);
 
-    result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                       std::end(result.scheme),
-                                       [](char c) { return c == ':'; }),
-                        std::end(result.scheme));
+    result.scheme.erase(
+      std::remove_if(
+        std::begin(result.scheme),
+        std::end(result.scheme),
+        [](char c)
+        {
+          return c == ':';
+        }),
+      std::end(result.scheme));
 
     return result;
   }
@@ -156,16 +166,21 @@ protected:
    */
   static Components case3(const std::vector<std::string>& uri)
   {
-    Components result{};
+    Components result {};
 
     result.scheme    = uri.at(0);
     result.authority = uri.at(1);
     result.path      = uri.at(2);
 
-    result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                       std::end(result.scheme),
-                                       [](char c) { return c == ':'; }),
-                        std::end(result.scheme));
+    result.scheme.erase(
+      std::remove_if(
+        std::begin(result.scheme),
+        std::end(result.scheme),
+        [](char c)
+        {
+          return c == ':';
+        }),
+      std::end(result.scheme));
 
     const auto [path, query, fragment] = separatePath(result.path);
 
@@ -193,12 +208,17 @@ protected:
 
     result.scheme    = uri.at(0);
     result.authority = uri.at(1);
-    result.path      = rejoinPath({std::begin(uri) + 2, std::end(uri)});
+    result.path      = rejoinPath({ std::begin(uri) + 2, std::end(uri) });
 
-    result.scheme.erase(std::remove_if(std::begin(result.scheme),
-                                       std::end(result.scheme),
-                                       [](char c) { return c == ':'; }),
-                        std::end(result.scheme));
+    result.scheme.erase(
+      std::remove_if(
+        std::begin(result.scheme),
+        std::end(result.scheme),
+        [](char c)
+        {
+          return c == ':';
+        }),
+      std::end(result.scheme));
 
     const auto [path, query, fragment] = separatePath(result.path);
 
@@ -236,7 +256,7 @@ protected:
    */
   static std::tuple<std::string, std::string, std::string> separatePath(const std::string& path_to_end)
   {
-    std::string path_only{path_to_end};
+    std::string path_only { path_to_end };
     std::string query;
     std::string fragment;
 
@@ -265,13 +285,13 @@ protected:
       }
     }
 
-    return {path_only, query, fragment};
+    return { path_only, query, fragment };
   }
 
 private:
   std::string m_uri;
 };
 
-}  // namespace urii
+}  // namespace uin
 
-#endif /* URII_LEXER_H*/
+#endif /* UIN_LEXER_H*/

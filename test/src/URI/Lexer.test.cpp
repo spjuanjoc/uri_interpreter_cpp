@@ -1,17 +1,18 @@
 /**
  * @brief
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2021-06-02
  */
 
-#include "URI/Lexer.h"
+#include "URI/Lexer.hpp"
 
 #include "UriExamples.h"
-#define CATCH_CONFIG_ENABLE_BENCHMARKING
-#include <catch2/catch.hpp>
 
-using namespace urii;
+#include <catch2/benchmark/catch_benchmark.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+using namespace uin;
 
 class LexerFixture
 {
@@ -132,7 +133,7 @@ TEST_CASE("should benchmark the lexer", "[lex][benchmark]")
 {
   BENCHMARK("lexer construction and lex")
   {
-    Lexer lexer{name_path_query_fragment};
+    Lexer lexer { name_path_query_fragment };
     lexer.lex();
   };
 }

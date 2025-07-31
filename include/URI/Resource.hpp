@@ -1,29 +1,29 @@
 /**
  * @brief Declaration of the class that analyses grammatically the URI components.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2020-11-10
  */
 
 /* 3. Implementation */
 
-#ifndef URII_RESOURCE_H
-#define URII_RESOURCE_H
+#ifndef UIN_RESOURCE_H
+#define UIN_RESOURCE_H
 
-#include "Components.h"
-#include "IResource.h"
-#include "Lexer.h"
+#include "Components.hpp"
+#include "IResource.hpp"
+#include "Lexer.hpp"
 
 #include <algorithm>
-#include <iostream>
-#include <iterator>
+// #include <iostream>
+// #include <iterator>
 #include <memory>
 #include <optional>
-#include <sstream>
+// #include <sstream>
 #include <utility>
-#include <vector>
+// #include <vector>
 
-namespace urii
+namespace uin
 {
 // Forward declarations
 class HostParser;
@@ -39,17 +39,20 @@ public:
   ~Resource() override = default;
 
   // Rule of five for special members.
-  Resource(const Resource&) = default;
-  Resource(Resource&&)      = default;
+  Resource(const Resource&)            = default;
+  Resource(Resource&&)                 = default;
   Resource& operator=(const Resource&) = default;
-  Resource& operator=(Resource&&) = default;
+  Resource& operator=(Resource&&)      = default;
 
   /**
    * Constructs the resource with a string URI.
    *
    * @param uri The Uniform Resource Information.
    */
-  explicit Resource(std::string uri) : m_uri(std::move(uri)) {}
+  explicit Resource(std::string uri)
+  : m_uri(std::move(uri))
+  {
+  }
 
   /**
    * Assigns the URI.
@@ -129,7 +132,7 @@ public:
         case Host::Unknown:
         default:
           result = true;
-          //parse all?
+          // parse all?
           break;
       }
     }
@@ -142,6 +145,6 @@ private:
   Components                 m_components;
 };
 
-}  // namespace urii
+}  // namespace uin
 
-#endif /* URII_RESOURCE_H */
+#endif /* UIN_RESOURCE_H */

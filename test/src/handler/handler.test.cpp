@@ -1,13 +1,13 @@
 //
-// Created by juan.castellanos on 2/10/20.
+// Created by spjuanjoc on 2/10/20.
 //
 
 #include "UriHandler.h"
-#include <gtest/gtest.h>
+// #include <gtest/gtest.h>
 
-struct HandlerFixture : public testing::Test
-{
-};
+// struct HandlerFixture : public testing::Test
+// {
+// };
 //
 //TEST_F(HandlerFixture, IsValidUri)
 //{

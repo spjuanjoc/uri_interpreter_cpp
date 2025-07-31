@@ -1,12 +1,12 @@
 /**
  * @brief   The URI interpreter implementation plan.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2021-06-09
  */
 
-#ifndef URII_INTERPRETER_H
-#define URII_INTERPRETER_H
+#ifndef UIN_INTERPRETER_H
+#define UIN_INTERPRETER_H
 
 /**
 URI interpreter plan:
@@ -52,4 +52,4 @@ URI interpreter plan:
 
  */
 
-#endif /* URII_INTERPRETER_H */
+#endif /* UIN_INTERPRETER_H */

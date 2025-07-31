@@ -1,17 +1,18 @@
 /**
  * @brief
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2021-06-02
  */
 
-#include "URI/Resource.h"
+#include "URI/Resource.hpp"
 
-#include "URI/Parser.h"
+#include "URI/Parser.hpp"
 #include "UriExamples.h"
-#include <catch2/catch.hpp>
 
-using namespace urii;
+#include <catch2/catch_test_macros.hpp>
+
+using namespace uin;
 
 class ResourceFixture
 {
@@ -99,7 +100,7 @@ TEST_CASE_METHOD(ResourceFixture, "should validate full URI", "[case4]")
 
 TEST_CASE("should validate full URI from constructor", "[case4]")
 {
-  Resource uri{name_path_query_fragment_2};
+  Resource uri { name_path_query_fragment_2 };
 
   CHECK(uri.validate(Host::Unknown));
   CHECK(uri.get(Component::scheme) == "https");

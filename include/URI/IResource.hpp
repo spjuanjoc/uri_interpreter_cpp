@@ -1,18 +1,18 @@
 /**
  * @brief Declaration of the interface that stores a URI.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2020-10-03
  */
 
 /* 2. Interface */
 
-#ifndef URII_IRESOURCE_H
-#define URII_IRESOURCE_H
+#ifndef UIN_IRESOURCE_H
+#define UIN_IRESOURCE_H
 
 #include <string>
 
-namespace urii
+namespace uin
 {
 // Forward declarations
 struct Authority;
@@ -30,15 +30,15 @@ public:
   virtual ~IResource() = default;
 
   // Rule of five for special members.
-  IResource(const IResource&) = default;
-  IResource(IResource&&)      = default;
+  IResource(const IResource&)            = default;
+  IResource(IResource&&)                 = default;
   IResource& operator=(const IResource&) = default;
-  IResource& operator=(IResource&&) = default;
+  IResource& operator=(IResource&&)      = default;
 
   virtual bool        validate(Host) = 0;
   virtual std::string get(Component) = 0;
 };
 
-}  // namespace urii
+}  // namespace uin
 
-#endif /* URII_IRESOURCE_H */
+#endif /* UIN_IRESOURCE_H */

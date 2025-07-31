@@ -1,18 +1,19 @@
 /**
  * @brief Declaration of the components that make up a Uniform Resource Identifier.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2021-06-02
  */
 
 /* 1. Components */
 
-#ifndef URII_COMPONENTS_H
-#define URII_COMPONENTS_H
+#ifndef UIN_COMPONENTS_H
+#define UIN_COMPONENTS_H
 
+#include <cstdint>
 #include <string>
 
-namespace urii
+namespace uin
 {
 
 /**
@@ -61,6 +62,6 @@ enum class Component : std::uint32_t
   authority = 4  /**< 4 */
 };
 
-}  // namespace urii
+}  // namespace uin
 
-#endif /* URII_COMPONENTS_H */
+#endif /* UIN_COMPONENTS_H */

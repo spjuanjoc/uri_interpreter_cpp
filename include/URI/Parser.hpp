@@ -1,19 +1,21 @@
 /**
  * @brief Declaration of the class that analyses grammatically the URI components.
  *
- * @author  juan.castellanos
+ * @author  spjuanjoc
  * @date    2021-06-02
  */
 
 /* 4.2. Usage: Parser */
 
-#ifndef URII_PARSER_H
-#define URII_PARSER_H
+#ifndef UIN_PARSER_H
+#define UIN_PARSER_H
 
-#include "IParser.h"
-#include <cstdio> // todo remove this when puts() removed
+#include "IParser.hpp"
 
-namespace urii
+#include <cstdio>  // todo remove this when puts() removed
+#include <iostream>
+
+namespace uin
 {
 
 /**
@@ -106,6 +108,6 @@ private:
   std::unique_ptr<IParseStrategy> m_parse_strategy;
 };
 
-}  // namespace urii
+}  // namespace uin
 
-#endif /* URII_PARSER_H */
+#endif /* UIN_PARSER_H */
