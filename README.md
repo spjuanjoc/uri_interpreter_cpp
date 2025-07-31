@@ -1,18 +1,13 @@
 # URI interpreter C++
 
-|CI|Platform|Compiler|Build Status|
-|---|---|---|:---:|
-|Github Actions | Linux Ubuntu  | gcc     | [![linux](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml)   |
-|Github Actions | MacOS         | clang   | [![macos](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml/badge.svg)](https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml) |
-|AppVeyor       | Windows       | MSVC    | ??|
-
 URI stands for Uniform Resource Identifier.
 
 This interpreter is used to perform lexical and grammatical analysis
 (lex and parse) for URIs in order to identify its components, specially to
 distinguish whether the host is IPv4, IPv6, or Registered Name.
 
----
+## Components
+
 URI components:
 * Scheme
 * Authority
@@ -35,7 +30,7 @@ The minimum required components are:
 * Host ?
 * Path
 
----
+## Syntax
 
 URI generic syntax:
 
@@ -50,8 +45,23 @@ where the authority component divides into three subcomponents:
 
 See the Wiki for [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
 
-## Tools 
-* CMake > 3.1
-* gcc-7 c++17
-* conan
+## Requirements
+
+* CMake > 3.24
+* c++20 compliant compiler
+* conan 2
 * Catch2
+
+
+[//]: # (## CI)
+
+[//]: # ()
+[//]: # (| CI             | Platform     | Compiler |                                                                                    Build Status                                                                                    |)
+
+[//]: # (|----------------|--------------|----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|)
+
+[//]: # (| Github Actions | Linux Ubuntu | gcc      |  [![linux]&#40;https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml/badge.svg&#41;]&#40;https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/linux.yml&#41;  |)
+
+[//]: # (| Github Actions | MacOS        | clang    | [![macos]&#40;https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml/badge.svg&#41;]&#40;https://github.com/spjuanjoc/uri_interpreter_cpp/actions/workflows/macosx.yml&#41; |)
+
+[//]: # (| AppVeyor       | Windows      | MSVC     |                                                                                         ??                                                                                         |)
